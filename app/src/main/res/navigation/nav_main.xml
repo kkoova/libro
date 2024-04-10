@@ -23,5 +23,14 @@
         android:id="@+id/start2"
         android:name="com.korobeynikova.libro.Start"
         android:label="fragment_start"
-        tools:layout="@layout/fragment_start" />
+        tools:layout="@layout/fragment_start" >
+        <action
+            android:id="@+id/action_start2_to_startSingOrLogin"
+            app:destination="@id/startSingOrLogin" />
+    </fragment>
+    <fragment
+        android:id="@+id/startSingOrLogin"
+        android:name="com.korobeynikova.libro.StartSingOrLogin"
+        android:label="fragment_start_sing_or_login"
+        tools:layout="@layout/fragment_start_sing_or_login" />
 </navigation>
