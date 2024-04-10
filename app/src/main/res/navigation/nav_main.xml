@@ -19,4 +19,9 @@
         android:name="com.korobeynikova.libro.Profile"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/start2"
+        android:name="com.korobeynikova.libro.Start"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" />
 </navigation>
