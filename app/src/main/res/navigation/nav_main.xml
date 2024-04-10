@@ -9,5 +9,14 @@
         android:id="@+id/bookLibrary"
         android:name="com.korobeynikova.libro.BookLibrary"
         android:label="fragment_book_library"
-        tools:layout="@layout/fragment_book_library" />
+        tools:layout="@layout/fragment_book_library" >
+        <action
+            android:id="@+id/action_bookLibrary_to_profile"
+            app:destination="@id/profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.korobeynikova.libro.Profile"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>
