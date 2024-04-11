@@ -81,12 +81,12 @@
             android:text="Читать"
             android:textColor="@color/white"
             android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView19"
+            app:layout_constraintBottom_toTopOf="@+id/textLoginGo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/textLoginGo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
