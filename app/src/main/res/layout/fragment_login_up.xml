@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SingUp">
+    tools:context=".LoginUp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,8 +38,7 @@
             android:inputType="textEmailAddress"
             app:layout_constraintBottom_toTopOf="@+id/textView20"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="TextSizeCheck" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView20"
@@ -61,45 +60,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="45dp"
             android:layout_marginEnd="45dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/custom_edit_text"
-            android:ems="10"
-            android:hint="libro_12_67"
-            android:inputType="textPassword"
-            app:layout_constraintBottom_toTopOf="@+id/textView21"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/textView21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="@font/rostov"
-            android:text="Повторите пароль"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <EditText
-            android:id="@+id/editTextTextPassword"
-            style="@style/editText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="45dp"
-            android:layout_marginEnd="45dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="140dp"
             android:background="@drawable/custom_edit_text"
             android:ems="10"
             android:hint="libro_12_67"
             android:inputType="textPassword"
             app:layout_constraintBottom_toTopOf="@+id/button3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="TextSizeCheck" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/button3"
@@ -123,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
             android:fontFamily="@font/rostov"
-            android:text="Уже зарегистрированы? Войти"
+            android:text="Забыли пароль?"
             android:textColor="@color/black"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -153,7 +121,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/rostov"
-            android:text="Привет!"
+            android:text="Здраствуйте!"
             android:textColor="@color/black"
             android:textSize="34sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -167,7 +135,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="45dp"
             android:fontFamily="@font/rostov"
-            android:text="Создаем новый аккаунт!"
+            android:text="Заполните поля и продолжите"
             android:textColor="@color/special_grey"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
