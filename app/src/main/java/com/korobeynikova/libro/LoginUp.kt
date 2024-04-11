@@ -1,59 +1,70 @@
 package com.korobeynikova.libro
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.korobeynikova.libro.databinding.FragmentLoginUpBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginUp.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginUp : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var binding: FragmentLoginUpBinding
+    private lateinit var  firebaseAuth: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login_up, container, false)
+        binding = FragmentLoginUpBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginUp.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginUp().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        binding.textPassGo.setOnClickListener {
+            if (binding.editTextTextEmailAddress.text.isEmpty()){
+                Toast.makeText(requireContext(),
+                    "Введите почту", Toast.LENGTH_SHORT).show()
+            } else {
+                firebaseAuth.sendPasswordResetEmail(binding.editTextTextEmailAddress.text.toString())
+                Toast.makeText(requireContext(),
+                    "Проверьте почту", Toast.LENGTH_SHORT).show()
             }
+        }
+        val exitBtn = view.findViewById<ImageButton>(R.id.exitImage)
+        val controller = findNavController()
+        exitBtn.setOnClickListener { controller.navigate(R.id.startSingOrLogin) }
+
+        binding.loginUpBnt.setOnClickListener {
+            if (binding.editTextTextEmailAddress.text.isEmpty() || binding.editTextTextPassword2.text.isEmpty())
+            {
+                Toast.makeText(requireContext(), "Пожалуйста заполните все поля", Toast.LENGTH_SHORT).show()
+            } else {
+                val emailUser = binding.editTextTextEmailAddress.text.toString()
+                val passwordUser = binding.editTextTextPassword2.text.toString()
+
+                firebaseAuth.signInWithEmailAndPassword(emailUser, passwordUser)
+                    .addOnCanceledListener {
+                        Toast.makeText(requireContext(),
+                            "Вход был прерван", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(),
+                            "Вы успешно вошли в аккаунт", Toast.LENGTH_SHORT).show()
+                        controller.navigate(R.id.bookLibrary)
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(requireContext(),
+                            "Вход не осуществлен", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
     }
 }

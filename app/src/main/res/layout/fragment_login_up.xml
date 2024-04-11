@@ -60,17 +60,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="45dp"
             android:layout_marginEnd="45dp"
-            android:layout_marginBottom="140dp"
             android:background="@drawable/custom_edit_text"
             android:ems="10"
             android:hint="libro_12_67"
             android:inputType="textPassword"
-            app:layout_constraintBottom_toTopOf="@+id/singUpBnt"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="407dp" />
 
         <Button
-            android:id="@+id/singUpBnt"
+            android:id="@+id/loginUpBnt"
             style="@style/blackBtn"
             android:layout_width="260dp"
             android:layout_height="75dp"
@@ -81,12 +80,12 @@
             android:text="Читать"
             android:textColor="@color/white"
             android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/textLoginGo"
+            app:layout_constraintBottom_toTopOf="@+id/textPassGo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textLoginGo"
+            android:id="@+id/textPassGo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
@@ -97,6 +96,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
