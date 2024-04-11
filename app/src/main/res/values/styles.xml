@@ -10,6 +10,7 @@
 
     <style name="editText">
         <item name="fontFamily">@font/rostov</item>
+        <item name="android:textColorHint">@color/special_grey</item>
         <item name="android:textSize">12dp</item>
     </style>
 
