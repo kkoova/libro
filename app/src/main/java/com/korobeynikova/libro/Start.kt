@@ -18,9 +18,12 @@ class Start : Fragment() {
         binding = FragmentStartBinding.inflate(inflater, container, false)
         return binding.root
 
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val container = findNavController()
 
-        binding.button.setOnClickListener {
+        binding.startBtn.setOnClickListener {
             container.navigate(R.id.startSingOrLogin)
         }
     }

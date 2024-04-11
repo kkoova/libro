@@ -65,12 +65,12 @@
             android:ems="10"
             android:hint="libro_12_67"
             android:inputType="textPassword"
-            app:layout_constraintBottom_toTopOf="@+id/button3"
+            app:layout_constraintBottom_toTopOf="@+id/singUpBnt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/singUpBnt"
             style="@style/blackBtn"
             android:layout_width="260dp"
             android:layout_height="75dp"

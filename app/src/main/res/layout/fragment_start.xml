@@ -42,13 +42,13 @@
         android:text="Мы предлагаем сокращенные версии популярных книг, чтобы помочь вам быстро погрузиться в суть идеи, не тратя много времени."
         android:textColor="@color/black"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/startBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/startBtn"
         style="@style/blackBtn"
         android:layout_width="260dp"
         android:layout_height="75dp"
@@ -63,4 +63,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
