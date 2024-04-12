@@ -26,8 +26,11 @@ class SettingsProfile : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+
         val logUotBtn = view.findViewById<ConstraintLayout>(R.id.exitLayout)
         val controller = findNavController()
+
         logUotBtn.setOnClickListener {
             firebaseAuth.signOut()
             Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT).show()
