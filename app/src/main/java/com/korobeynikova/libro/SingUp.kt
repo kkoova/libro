@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -28,7 +28,7 @@ class SingUp : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        val exitBtn = view.findViewById<ImageButton>(R.id.exitImage)
+        val exitBtn = view.findViewById<ImageView>(R.id.exitImage)
         val controller = findNavController()
         exitBtn.setOnClickListener { controller.navigate(R.id.startSingOrLogin) }
 
@@ -37,7 +37,8 @@ class SingUp : Fragment() {
         }
 
         binding.singUpBnt.setOnClickListener {
-            if (binding.editTextTextEmailAddress.text.isEmpty() ||
+            if (binding.editTextLogin.text.isEmpty() ||
+                binding.editTextTextEmailAddress.text.isEmpty() ||
                 binding.editTextTextPassword.text.isEmpty() ||
                 binding.editTextTextPassword2.text.isEmpty()){
                 Toast.makeText(requireContext(), "Пожалуйста заполните все поля", Toast.LENGTH_SHORT).show()
@@ -45,6 +46,7 @@ class SingUp : Fragment() {
                 val singUserEmail = binding.editTextTextEmailAddress.text.toString()
                 val singUserPassword = binding.editTextTextPassword.text.toString()
                 val singUserConfigPassword = binding.editTextTextPassword2.text.toString()
+                val login = binding.editTextLogin.text.toString()
 
                 if (singUserPassword == singUserConfigPassword){
                     firebaseAuth.createUserWithEmailAndPassword(singUserEmail, singUserPassword)
@@ -56,6 +58,9 @@ class SingUp : Fragment() {
                             Toast.makeText(requireContext(),
                                 "Вы успешно зарегестрировались", Toast.LENGTH_SHORT).show()
                             firebaseAuth.signInWithEmailAndPassword(singUserEmail, singUserPassword)
+
+
+
                             controller.navigate(R.id.bookLibrary)
                         }
                         .addOnFailureListener { e ->

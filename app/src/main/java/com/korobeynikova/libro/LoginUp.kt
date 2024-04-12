@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -38,7 +38,7 @@ class LoginUp : Fragment() {
                     "Проверьте почту", Toast.LENGTH_SHORT).show()
             }
         }
-        val exitBtn = view.findViewById<ImageButton>(R.id.exitImage)
+        val exitBtn = view.findViewById<ImageView>(R.id.exitImage)
         val controller = findNavController()
         exitBtn.setOnClickListener { controller.navigate(R.id.startSingOrLogin) }
 

@@ -64,7 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/textProfName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
@@ -86,7 +86,7 @@
                     android:background="@drawable/custom_button_red"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView8">
+                    app:layout_constraintTop_toBottomOf="@+id/textProfName">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraintLayout4"
@@ -108,7 +108,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/textView14"
+                            android:id="@+id/textBook"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/rostov"
@@ -154,7 +154,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/textView11"
+                            android:id="@+id/textLikeBook"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/rostov"

@@ -72,7 +72,7 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="410dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -136,7 +136,7 @@
                     android:text="6 класс"
                     android:textColor="@color/special_grey"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView7"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
                     app:layout_constraintTop_toTopOf="parent" />
 
