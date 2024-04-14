@@ -9,12 +9,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.korobeynikova.libro.databinding.FragmentSingUpBinding
 
 class SingUp : Fragment() {
 
     private lateinit var binding: FragmentSingUpBinding
     private lateinit var  firebaseAuth: FirebaseAuth
+    private lateinit var reference: DatabaseReference
+    private lateinit var login: String
+    private lateinit var singUserEmail: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +37,8 @@ class SingUp : Fragment() {
         val controller = findNavController()
         exitBtn.setOnClickListener { controller.navigate(R.id.startSingOrLogin) }
 
+        reference = FirebaseDatabase.getInstance().getReference("Users")
+
         binding.textLoginGo.setOnClickListener {
             controller.navigate(R.id.loginUp)
         }
@@ -43,10 +50,10 @@ class SingUp : Fragment() {
                 binding.editTextTextPassword2.text.isEmpty()){
                 Toast.makeText(requireContext(), "Пожалуйста заполните все поля", Toast.LENGTH_SHORT).show()
             } else {
-                val singUserEmail = binding.editTextTextEmailAddress.text.toString()
+                singUserEmail = binding.editTextTextEmailAddress.text.toString()
                 val singUserPassword = binding.editTextTextPassword.text.toString()
                 val singUserConfigPassword = binding.editTextTextPassword2.text.toString()
-                val login = binding.editTextLogin.text.toString()
+                login = binding.editTextLogin.text.toString()
 
                 if (singUserPassword == singUserConfigPassword){
                     firebaseAuth.createUserWithEmailAndPassword(singUserEmail, singUserPassword)
@@ -59,7 +66,7 @@ class SingUp : Fragment() {
                                 "Вы успешно зарегестрировались", Toast.LENGTH_SHORT).show()
                             firebaseAuth.signInWithEmailAndPassword(singUserEmail, singUserPassword)
 
-
+                            saveUserData()
 
                             controller.navigate(R.id.bookLibrary)
                         }
@@ -72,5 +79,9 @@ class SingUp : Fragment() {
                 }
             }
         }
+    }
+
+    private fun saveUserData(){
+
     }
 }
