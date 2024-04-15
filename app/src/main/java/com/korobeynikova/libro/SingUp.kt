@@ -70,20 +70,20 @@ class SingUp : Fragment() {
 
                     userReference.setValue(userData)
                         .addOnSuccessListener {
-                            Log.d("FirebaseDebug", "Данные успешно записаны в базу данных") // Лог для отладки успешного выполнения записи
+                            Log.d("FirebaseDebug", "Данные успешно записаны в базу данных")
                             auth.signInWithEmailAndPassword(singUserEmail, singUserPassword)
                                 .addOnSuccessListener {
-                                    Log.d("FirebaseDebug", "Пользователь успешно вошел в систему") // Лог для отладки успешного входа пользователя
+                                    Log.d("FirebaseDebug", "Пользователь успешно вошел в систему")
                                     Toast.makeText(requireContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show()
                                     controller.navigate(R.id.bookLibrary)
                                 }
                                 .addOnFailureListener { e ->
-                                    Log.e("FirebaseDebug", "Ошибка при входе пользователя: ${e.localizedMessage ?: "Unknown error"}") // Лог для отладки ошибки входа пользователя
+                                    Log.e("FirebaseDebug", "Ошибка при входе пользователя: ${e.localizedMessage ?: "Unknown error"}")
                                     Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                                 }
                         }
                         .addOnFailureListener { e ->
-                            Log.e("FirebaseDebug", "Ошибка при записи данных в базу данных: ${e.localizedMessage ?: "Unknown error"}") // Лог для отладки ошибки записи данных
+                            Log.e("FirebaseDebug", "Ошибка при записи данных в базу данных: ${e.localizedMessage ?: "Unknown error"}")
                             Toast.makeText(requireContext(), e.localizedMessage ?: getString(R.string.registration_failed), Toast.LENGTH_SHORT).show()
                         }
                 }
