@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "228607944104",
+    "project_id": "libro-ce0de",
+    "storage_bucket": "libro-ce0de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228607944104:android:1b837747317f93d6e6a99d",
+        "android_client_info": {
+          "package_name": "com.korobeynikova.libro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACAZBCKtpBZ0wjaPKc18rnEaVC6kb7qBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
