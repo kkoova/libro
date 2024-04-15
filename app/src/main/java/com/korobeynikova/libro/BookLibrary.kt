@@ -8,19 +8,25 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.Firebase
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.korobeynikova.libro.databinding.FragmentBookLibraryBinding
-import com.korobeynikova.libro.databinding.FragmentLoginUpBinding
 
 class BookLibrary : Fragment() {
 
     private lateinit var profileBtn: ImageView
-    private lateinit var  firebaseAuth: FirebaseAuth
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var binding: FragmentBookLibraryBinding
     private lateinit var database: DatabaseReference
+    private lateinit var bookAdapter: BookAdapter
+    private lateinit var recyclerViewBooks: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,14 +42,19 @@ class BookLibrary : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         buttonClick()
+
+        adapterLibrary()
     }
+
     private fun buttonClick(){
 
         val container = findNavController()
         val currentUser = firebaseAuth.currentUser
+        database = FirebaseDatabase.getInstance().reference
+
+        recyclerViewBooks = binding.recyclerViewBooks
+
         if (currentUser != null) {
-            // Пользователь вошел в аккаунт
-            database = Firebase.database.reference
             val uid = FirebaseAuth.getInstance().currentUser!!.uid
             database.child("users").child(uid).get()
                 .addOnSuccessListener {
@@ -52,7 +63,7 @@ class BookLibrary : Fragment() {
                     binding.starsCount.text = stars
                     binding.helloTextLibr.text = "Привет $login"
                 }.addOnFailureListener {
-                    Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
                 }
         } else {
             // Пользователь не вошел в аккаунт
@@ -62,5 +73,32 @@ class BookLibrary : Fragment() {
         profileBtn.setOnClickListener{
             container.navigate(R.id.profile)
         }
+    }
+
+    private fun adapterLibrary(){
+        binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
+
+        val query = FirebaseDatabase.getInstance().reference.child("books")
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val booksList = mutableListOf<Book>()
+                for (snapshot in dataSnapshot.children) {
+                    val book = snapshot.getValue(Book::class.java)
+                    book?.let { booksList.add(it) }
+                }
+                val backgroundImagesArray = getBackgroundImagesArray()
+                bookAdapter = BookAdapter(booksList, backgroundImagesArray)
+                binding.recyclerViewBooks.adapter = bookAdapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Обработка ошибок при получении данных из Firebase
+            }
+        })
+    }
+
+    // Метод для создания массива ресурсов изображений
+    private fun getBackgroundImagesArray(): IntArray {
+        return intArrayOf(R.drawable.fon_1, R.drawable.fon_2, R.drawable.fon_3)
     }
 }
