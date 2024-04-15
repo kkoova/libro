@@ -65,7 +65,9 @@ class SingUp : Fragment() {
                         val userData = hashMapOf(
                             "username" to login,
                             "email" to singUserEmail,
-                            "stars" to 100
+                            "stars" to 100,
+                            "like" to 0,
+                            "all" to 0
                         )
 
                     userReference.setValue(userData)
