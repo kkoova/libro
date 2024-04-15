@@ -36,16 +36,6 @@ class SettingsProfile : Fragment() {
 
         val logUotBtn = view.findViewById<ConstraintLayout>(R.id.exitLayout)
         val controller = findNavController()
-        val uid = FirebaseAuth.getInstance().currentUser!!.uid
-        database.child("users").child(uid).get()
-            .addOnSuccessListener {
-                val login = it.child("username").value.toString()
-                val email = it.child("email").value.toString()
-                binding.loginText.text = login
-                binding.emailText.text = email
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
-            }
 
         logUotBtn.setOnClickListener {
             firebaseAuth.signOut()
