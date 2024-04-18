@@ -1,11 +1,13 @@
 package com.korobeynikova.libro
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.Firebase
@@ -31,11 +33,16 @@ class Profile : Fragment() {
 
         val settingsBtn = view.findViewById<ImageView>(R.id.settingsBtn)
         val libraryBtn = view.findViewById<ImageView>(R.id.bookBnt)
+        val profile = view.findViewById<ImageView>(R.id.profileBtn)
+
+        val color = ContextCompat.getColor(requireContext(), R.color.black)
+        profile.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
         val controller = findNavController()
 
         settingsBtn.setOnClickListener { controller.navigate(R.id.settingsProfile) }
         libraryBtn.setOnClickListener { controller.navigate(R.id.bookLibrary) }
+
 
         database = Firebase.database.reference
         val uid = FirebaseAuth.getInstance().currentUser!!.uid

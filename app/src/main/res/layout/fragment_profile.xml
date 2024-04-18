@@ -4,36 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/back_profile"
     tools:context=".Profile">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background_profile"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout8"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:background="@color/special_white"
-        app:layout_constraintBottom_toTopOf="@+id/include2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/include2"
+        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -56,8 +34,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout6"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_button_white"
+                android:layout_height="1000dp"
+                android:background="@color/special_white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
-                    android:fontFamily="@font/rostov"
+                    android:fontFamily="@font/reseva"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +58,7 @@
                     android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:background="@drawable/custom_button_red"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -89,9 +67,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraintLayout4"
-                        android:layout_width="wrap_content"
+                        android:layout_width="130dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="32dp"
+                        android:layout_marginEnd="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
                         app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +77,7 @@
 
                         <ImageView
                             android:id="@+id/imageView4"
-                            android:layout_width="40dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="40dp"
                             android:src="@drawable/book"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -110,10 +88,11 @@
                             android:id="@+id/textBook"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/rostov"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/reseva"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="24sp"
+                            android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -135,9 +114,9 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraintLayout3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="130dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/constraintLayout4"
@@ -145,7 +124,7 @@
 
                         <ImageView
                             android:id="@+id/imageView6"
-                            android:layout_width="40dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="40dp"
                             android:src="@drawable/heart"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -156,10 +135,11 @@
                             android:id="@+id/textLikeBook"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/rostov"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/reseva"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="24sp"
+                            android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -174,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp"
-                    android:fontFamily="@font/rostov"
+                    android:fontFamily="@font/reseva"
                     android:text="Избранные"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -183,8 +163,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
@@ -201,7 +181,7 @@
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:layout_marginBottom="-40dp"
-                android:src="@drawable/profile_ona"
+                android:src="@drawable/profile_one"
                 app:layout_constraintBottom_toBottomOf="@+id/constraintLayout5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -220,11 +200,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/include2"
         layout="@layout/bottom_menu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

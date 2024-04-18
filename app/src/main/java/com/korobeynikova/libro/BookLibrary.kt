@@ -1,13 +1,17 @@
 package com.korobeynikova.libro
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,8 +52,40 @@ class BookLibrary : Fragment() {
         adapterLibrary()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
+
+        val book = view.findViewById<ImageView>(R.id.bookBnt)
+
+        val color = ContextCompat.getColor(requireContext(), R.color.black)
+        book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
+        text()
     }
 
+    private fun text(){
+        val clickListener = View.OnClickListener { view ->
+
+            binding.nineKl.setBackgroundResource(R.drawable.custom_button_white)
+            binding.eghtKl.setBackgroundResource(R.drawable.custom_button_white)
+            binding.sevenKl.setBackgroundResource(R.drawable.custom_button_white)
+            binding.sixKl.setBackgroundResource(R.drawable.custom_button_white)
+            binding.fiveKl.setBackgroundResource(R.drawable.custom_button_white)
+
+            binding.nineKl.setTextColor(Color.BLACK)
+            binding.eghtKl.setTextColor(Color.BLACK)
+            binding.sevenKl.setTextColor(Color.BLACK)
+            binding.sixKl.setTextColor(Color.BLACK)
+            binding.fiveKl.setTextColor(Color.BLACK)
+
+            view.setBackgroundResource(R.drawable.custom_button_black)
+            (view as TextView).setTextColor(Color.WHITE)
+        }
+
+        binding.nineKl.setOnClickListener(clickListener)
+        binding.eghtKl.setOnClickListener(clickListener)
+        binding.sevenKl.setOnClickListener(clickListener)
+        binding.sixKl.setOnClickListener(clickListener)
+        binding.fiveKl.setOnClickListener(clickListener)
+    }
     private fun buttonClick(){
 
         val container = findNavController()
