@@ -43,14 +43,11 @@ class BookLibrary : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setupRecyclerView()
         profileBtn = view.findViewById(R.id.profileBtn)
         firebaseAuth = FirebaseAuth.getInstance()
 
         buttonClick()
-
-        adapterLibrary()
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
 
         val book = view.findViewById<ImageView>(R.id.bookBnt)
@@ -117,20 +114,25 @@ class BookLibrary : Fragment() {
         }
     }
 
-    private fun adapterLibrary(){
-        binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
-
-        val query = FirebaseDatabase.getInstance().reference.child("books")
+    private fun setupRecyclerView() {
+        val query = FirebaseDatabase.getInstance().reference.child("books").child("nine")
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val booksList = mutableListOf<Book>()
-                for (snapshot in dataSnapshot.children) {
-                    val book = snapshot.getValue(Book::class.java)
-                    book?.let { booksList.add(it) }
+                for (nineSnapshot in dataSnapshot.children) {
+                    for (book in nineSnapshot.children) {
+                        // Получаем значение поля "1", "2", "3" и т.д. для каждой книги
+                        val bookName = book.getValue(String::class.java)
+                        bookName?.let {
+                            val book = Book(it)
+                            booksList.add(book)
+                        }
+                    }
                 }
                 val backgroundImagesArray = getBackgroundImagesArray()
-                bookAdapter = BookAdapter(booksList, backgroundImagesArray)
-                binding.recyclerViewBooks.adapter = bookAdapter
+                val bookAdapter = BookAdapter(booksList, backgroundImagesArray)
+                binding.recyclerViewBooks.adapter = bookAdapter // Устанавливаем адаптер
+                binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext()) // Устанавливаем layoutManager
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -138,6 +140,7 @@ class BookLibrary : Fragment() {
             }
         })
     }
+
 
     // Метод для создания массива ресурсов изображений
     private fun getBackgroundImagesArray(): IntArray {
