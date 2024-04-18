@@ -2,20 +2,21 @@
 <resources>
 
     <style name="blackBtn">
-        <item name="fontFamily">@font/rostov</item>
+        <item name="fontFamily">@font/reseva</item>
         <item name="textAllCaps">false</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
+        <item name="android:textSize">25dp</item>
     </style>
 
     <style name="editText">
-        <item name="fontFamily">@font/rostov</item>
+        <item name="fontFamily">@font/reseva</item>
         <item name="android:textColorHint">@color/special_grey</item>
         <item name="android:textSize">12dp</item>
     </style>
 
     <style name="MyNavText">
-        <item name="fontFamily">@font/rostov</item>
+        <item name="fontFamily">@font/reseva</item>
         <item name="android:textSize">15dp</item>
         <item name="android:textColor">@color/black</item>
     </style>

@@ -1,5 +1,6 @@
 package com.korobeynikova.libro
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,34 +12,33 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.korobeynikova.libro.databinding.FragmentSingUpBinding
+import com.korobeynikova.libro.databinding.FragmentSignUpLibroBinding
 
-class SingUp : Fragment() {
+class SignUpLibro : Fragment() {
 
-    private lateinit var binding: FragmentSingUpBinding
+    private lateinit var binding: FragmentSignUpLibroBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSingUpBinding.inflate(inflater, container, false)
+    ):View? {
+        binding = FragmentSignUpLibroBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val container = findNavController()
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 
-        val exitBtn = view.findViewById<ImageView>(R.id.exitImage)
-        val controller = findNavController()
-        exitBtn.setOnClickListener { controller.navigate(R.id.startSingOrLogin) }
+        val exit = view.findViewById<ImageView>(R.id.exitImage)
+
+        exit.setOnClickListener { container.navigate(R.id.startLiginOrSign) }
 
         binding.textLoginGo.setOnClickListener {
-            controller.navigate(R.id.loginUp)
+            container.navigate(R.id.loginUpLibro)
         }
 
         binding.singUpBnt.setOnClickListener {
@@ -61,14 +61,14 @@ class SingUp : Fragment() {
             auth.createUserWithEmailAndPassword(singUserEmail, singUserPassword)
                 .addOnSuccessListener { authResult ->
                     val uid = authResult.user?.uid
-                        val userReference = database.reference.child("users").child(uid!!)
-                        val userData = hashMapOf(
-                            "username" to login,
-                            "email" to singUserEmail,
-                            "stars" to 100,
-                            "like" to 0,
-                            "all" to 0
-                        )
+                    val userReference = database.reference.child("users").child(uid!!)
+                    val userData = hashMapOf(
+                        "username" to login,
+                        "email" to singUserEmail,
+                        "stars" to 100,
+                        "like" to 0,
+                        "all" to 0
+                    )
 
                     userReference.setValue(userData)
                         .addOnSuccessListener {
@@ -77,7 +77,9 @@ class SingUp : Fragment() {
                                 .addOnSuccessListener {
                                     Log.d("FirebaseDebug", "Пользователь успешно вошел в систему")
                                     Toast.makeText(requireContext(), R.string.successful_registration, Toast.LENGTH_SHORT).show()
-                                    controller.navigate(R.id.bookLibrary)
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    startActivity(intent)
+                                    MainLog().finish()
                                 }
                                 .addOnFailureListener { e ->
                                     Log.e("FirebaseDebug", "Ошибка при входе пользователя: ${e.localizedMessage ?: "Unknown error"}")

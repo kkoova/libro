@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SingUp">
+    tools:context=".SignUpLibro">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_profile">
+        android:background="@drawable/sign_up_libro">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="230dp"
             android:layout_marginBottom="24dp"
+            android:scrollbars="none"
             app:layout_constraintBottom_toTopOf="@+id/singUpBnt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="16dp"
-                    android:fontFamily="@font/rostov"
+                    android:fontFamily="@font/reseva"
                     android:text="Логин"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -62,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="32dp"
-                    android:fontFamily="@font/rostov"
+                    android:fontFamily="@font/reseva"
                     android:text="Почта"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -92,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="32dp"
-                    android:fontFamily="@font/rostov"
+                    android:fontFamily="@font/reseva"
                     android:text="Пароль"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -121,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
                     android:layout_marginTop="32dp"
-                    android:fontFamily="@font/rostov"
+                    android:fontFamily="@font/reseva"
                     android:text="Повторите пароль"
                     android:textColor="@color/black"
                     android:textSize="20sp"
@@ -170,7 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
-            android:fontFamily="@font/rostov"
+            android:fontFamily="@font/reseva"
             android:text="Уже зарегистрированы? Войти"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -200,7 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/rostov"
+            android:fontFamily="@font/reseva"
             android:text="Привет!"
             android:textColor="@color/black"
             android:textSize="34sp"
@@ -214,13 +215,12 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="45dp"
-            android:fontFamily="@font/rostov"
+            android:fontFamily="@font/reseva"
             android:text="Создаем новый аккаунт!"
             android:textColor="@color/special_grey"
-            android:textSize="16sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/helloText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

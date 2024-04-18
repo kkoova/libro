@@ -1,11 +1,13 @@
 package com.korobeynikova.libro
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +46,8 @@ class BookLibrary : Fragment() {
         buttonClick()
 
         adapterLibrary()
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
     }
 
     private fun buttonClick(){
@@ -67,7 +71,9 @@ class BookLibrary : Fragment() {
                 }
         } else {
             // Пользователь не вошел в аккаунт
-            container.navigate(R.id.start2)
+            val intent = Intent(context, MainLog::class.java)
+            startActivity(intent)
+            MainActivity().finish()
         }
 
         profileBtn.setOnClickListener{

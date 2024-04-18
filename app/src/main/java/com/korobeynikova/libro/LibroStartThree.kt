@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.korobeynikova.libro.databinding.FragmentStartBinding
+import com.korobeynikova.libro.databinding.FragmentLibroStartThreeBinding
 
-class Start : Fragment() {
+class LibroStartThree : Fragment() {
 
-    private lateinit var binding: FragmentStartBinding
+    private lateinit var binding: FragmentLibroStartThreeBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentStartBinding.inflate(inflater, container, false)
+        binding = FragmentLibroStartThreeBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -23,8 +23,8 @@ class Start : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val container = findNavController()
 
-        binding.startBtn.setOnClickListener {
-            container.navigate(R.id.startSingOrLogin)
+        binding.goBtn.setOnClickListener {
+            container.navigate(R.id.startLiginOrSign)
         }
     }
 }

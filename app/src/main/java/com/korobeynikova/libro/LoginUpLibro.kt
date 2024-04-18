@@ -1,5 +1,6 @@
 package com.korobeynikova.libro
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,25 +10,28 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.korobeynikova.libro.databinding.FragmentLoginUpBinding
+import com.korobeynikova.libro.databinding.FragmentLoginUpLibroBinding
 
-class LoginUp : Fragment() {
+class LoginUpLibro : Fragment() {
 
-    private lateinit var binding: FragmentLoginUpBinding
+    private lateinit var binding: FragmentLoginUpLibroBinding
     private lateinit var  firebaseAuth: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLoginUpBinding.inflate(inflater, container, false)
+        binding = FragmentLoginUpLibroBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val container = findNavController()
+
+        val exit = view.findViewById<ImageView>(R.id.exitImage)
+
+        exit.setOnClickListener { container.navigate(R.id.startLiginOrSign) }
 
         firebaseAuth = FirebaseAuth.getInstance()
-
         binding.textPassGo.setOnClickListener {
             if (binding.editTextTextEmailAddress.text.isEmpty()){
                 Toast.makeText(requireContext(),
@@ -38,10 +42,6 @@ class LoginUp : Fragment() {
                     "Проверьте почту", Toast.LENGTH_SHORT).show()
             }
         }
-        val exitBtn = view.findViewById<ImageView>(R.id.exitImage)
-        val controller = findNavController()
-        exitBtn.setOnClickListener { controller.navigate(R.id.startSingOrLogin) }
-
         binding.loginUpBnt.setOnClickListener {
             if (binding.editTextTextEmailAddress.text.isEmpty() || binding.editTextTextPassword2.text.isEmpty())
             {
@@ -58,7 +58,9 @@ class LoginUp : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(),
                             "Вы успешно вошли в аккаунт", Toast.LENGTH_SHORT).show()
-                        controller.navigate(R.id.bookLibrary)
+                        val intent = Intent(context, MainActivity::class.java)
+                        startActivity(intent)
+                        MainLog().finish()
                     }
                     .addOnFailureListener { e ->
                         Toast.makeText(requireContext(),

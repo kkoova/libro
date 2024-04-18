@@ -1,5 +1,6 @@
 package com.korobeynikova.libro
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
 
@@ -40,7 +40,9 @@ class SettingsProfile : Fragment() {
         logUotBtn.setOnClickListener {
             firebaseAuth.signOut()
             Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT).show()
-            controller.navigate(R.id.start2)
+            val intent = Intent(context, MainLog::class.java)
+            startActivity(intent)
+            MainActivity().finish()
         }
     }
 }

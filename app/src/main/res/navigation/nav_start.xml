@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_start"
+    app:startDestination="@id/startApp">
+
+    <fragment
+        android:id="@+id/startApp"
+        android:name="com.korobeynikova.libro.StartApp"
+        android:label="fragment_start_app"
+        tools:layout="@layout/fragment_start_app" >
+        <action
+            android:id="@+id/action_startApp_to_libro_start_one"
+            app:destination="@id/libro_start_one" />
+    </fragment>
+    <fragment
+        android:id="@+id/libro_start_one"
+        android:name="com.korobeynikova.libro.LibroStartOne"
+        android:label="fragment_libro_start_one"
+        tools:layout="@layout/fragment_libro_start_one" >
+        <action
+            android:id="@+id/action_libro_start_one_to_libro_start_two"
+            app:destination="@id/libro_start_two" />
+    </fragment>
+    <fragment
+        android:id="@+id/libro_start_two"
+        android:name="com.korobeynikova.libro.libroStartTwo"
+        android:label="fragment_libro_start_two"
+        tools:layout="@layout/fragment_libro_start_two" >
+        <action
+            android:id="@+id/action_libro_start_two_to_libroStartThree"
+            app:destination="@id/libroStartThree" />
+    </fragment>
+    <fragment
+        android:id="@+id/libroStartThree"
+        android:name="com.korobeynikova.libro.LibroStartThree"
+        android:label="fragment_libro_start_three"
+        tools:layout="@layout/fragment_libro_start_three" >
+        <action
+            android:id="@+id/action_libroStartThree_to_startLiginOrSign"
+            app:destination="@id/startLiginOrSign" />
+    </fragment>
+    <fragment
+        android:id="@+id/startLiginOrSign"
+        android:name="com.korobeynikova.libro.StartLiginOrSign"
+        android:label="fragment_start_ligin_or_sign"
+        tools:layout="@layout/fragment_start_ligin_or_sign" >
+        <action
+            android:id="@+id/action_startLiginOrSign_to_loginUpLibro"
+            app:destination="@id/loginUpLibro" />
+        <action
+            android:id="@+id/action_startLiginOrSign_to_signUpLibro"
+            app:destination="@id/signUpLibro" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginUpLibro"
+        android:name="com.korobeynikova.libro.LoginUpLibro"
+        android:label="fragment_login_up_libro"
+        tools:layout="@layout/fragment_login_up_libro" />
+    <fragment
+        android:id="@+id/signUpLibro"
+        android:name="com.korobeynikova.libro.SignUpLibro"
+        android:label="fragment_sign_up_libro"
+        tools:layout="@layout/fragment_sign_up_libro" />
+</navigation>

@@ -24,45 +24,6 @@
             app:destination="@id/settingsProfile" />
     </fragment>
     <fragment
-        android:id="@+id/start2"
-        android:name="com.korobeynikova.libro.Start"
-        android:label="fragment_start"
-        tools:layout="@layout/fragment_start" >
-        <action
-            android:id="@+id/action_start2_to_startSingOrLogin"
-            app:destination="@id/startSingOrLogin" />
-    </fragment>
-    <fragment
-        android:id="@+id/startSingOrLogin"
-        android:name="com.korobeynikova.libro.StartSingOrLogin"
-        android:label="fragment_start_sing_or_login"
-        tools:layout="@layout/fragment_start_sing_or_login" >
-        <action
-            android:id="@+id/action_startSingOrLogin_to_singUp"
-            app:destination="@id/singUp" />
-        <action
-            android:id="@+id/action_startSingOrLogin_to_loginUp"
-            app:destination="@id/loginUp" />
-    </fragment>
-    <fragment
-        android:id="@+id/singUp"
-        android:name="com.korobeynikova.libro.SingUp"
-        android:label="fragment_sing_up"
-        tools:layout="@layout/fragment_sing_up" >
-        <action
-            android:id="@+id/action_singUp_to_bookLibrary"
-            app:destination="@id/bookLibrary" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginUp"
-        android:name="com.korobeynikova.libro.LoginUp"
-        android:label="fragment_login_up"
-        tools:layout="@layout/fragment_login_up" >
-        <action
-            android:id="@+id/action_loginUp_to_bookLibrary"
-            app:destination="@id/bookLibrary" />
-    </fragment>
-    <fragment
         android:id="@+id/settingsProfile"
         android:name="com.korobeynikova.libro.SettingsProfile"
         android:label="fragment_settings_profile"
