@@ -98,9 +98,9 @@ class BookLibrary : Fragment() {
                     val login = it.child("username").value.toString()
                     val stars = it.child("stars").value.toString()
                     binding.starsCount.text = stars
-                    binding.helloTextLibr.text = "Привет $login"
+                    binding.helloTextLibr.text = "Привет, $login!"
                 }.addOnFailureListener {
-                    Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
                 }
         } else {
             // Пользователь не вошел в аккаунт
@@ -137,6 +137,7 @@ class BookLibrary : Fragment() {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Обработка ошибок при получении данных из Firebase
+                Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
             }
         })
     }
