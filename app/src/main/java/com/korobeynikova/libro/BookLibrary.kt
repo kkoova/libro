@@ -155,6 +155,8 @@ class BookLibrary : Fragment() {
 
     // Метод для создания массива ресурсов изображений
     private fun getBackgroundImagesArray(): IntArray {
-        return intArrayOf(R.drawable.fon_1, R.drawable.fon_2, R.drawable.fon_3)
+        return intArrayOf(R.drawable.fon_1, R.drawable.fon_2, R.drawable.fon_3, R.drawable.fon_4,
+            R.drawable.fon_5, R.drawable.fon_6, R.drawable.fon_7, R.drawable.fon_8, R.drawable.fon_9,
+            R.drawable.fon_10)
     }
 }
