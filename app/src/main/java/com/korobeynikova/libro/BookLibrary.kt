@@ -32,11 +32,13 @@ class BookLibrary : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var bookAdapter: BookAdapter
     private lateinit var recyclerViewBooks: RecyclerView
+    private lateinit var bookKlass: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        bookKlass = "nine"
         binding = FragmentBookLibraryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -46,6 +48,8 @@ class BookLibrary : Fragment() {
         setupRecyclerView()
         profileBtn = view.findViewById(R.id.profileBtn)
         firebaseAuth = FirebaseAuth.getInstance()
+        binding.nineKl.setBackgroundResource(R.drawable.custom_button_black)
+        binding.nineKl.setTextColor(Color.WHITE)
 
         buttonClick()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
@@ -54,7 +58,6 @@ class BookLibrary : Fragment() {
 
         val color = ContextCompat.getColor(requireContext(), R.color.black)
         book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-
         text()
     }
 
@@ -75,6 +78,16 @@ class BookLibrary : Fragment() {
 
             view.setBackgroundResource(R.drawable.custom_button_black)
             (view as TextView).setTextColor(Color.WHITE)
+
+            when (view.id) {
+                R.id.nineKl -> bookKlass = "nine"
+                R.id.eghtKl -> bookKlass = "eight"
+                R.id.sevenKl -> bookKlass = "seven"
+                R.id.sixKl -> bookKlass = "six"
+                R.id.fiveKl -> bookKlass = "five"
+            }
+
+            setupRecyclerView()
         }
 
         binding.nineKl.setOnClickListener(clickListener)
@@ -82,9 +95,10 @@ class BookLibrary : Fragment() {
         binding.sevenKl.setOnClickListener(clickListener)
         binding.sixKl.setOnClickListener(clickListener)
         binding.fiveKl.setOnClickListener(clickListener)
-    }
-    private fun buttonClick(){
 
+    }
+
+    private fun buttonClick(){
         val container = findNavController()
         val currentUser = firebaseAuth.currentUser
         database = FirebaseDatabase.getInstance().reference
@@ -115,29 +129,25 @@ class BookLibrary : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val query = FirebaseDatabase.getInstance().reference.child("books").child("nine")
+        val query = FirebaseDatabase.getInstance().reference.child("books").child(bookKlass)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val booksList = mutableListOf<Book>()
-                for (nineSnapshot in dataSnapshot.children) {
-                    for (book in nineSnapshot.children) {
-                        // Получаем значение поля "1", "2", "3" и т.д. для каждой книги
-                        val bookName = book.getValue(String::class.java)
-                        bookName?.let {
-                            val book = Book(it)
-                            booksList.add(book)
-                        }
+                for (snapshot in dataSnapshot.children) {
+                    val title = snapshot.child("title").getValue(String::class.java)
+                    title?.let {
+                        val book = Book(it)
+                        booksList.add(book)
                     }
                 }
                 val backgroundImagesArray = getBackgroundImagesArray()
                 val bookAdapter = BookAdapter(booksList, backgroundImagesArray)
-                binding.recyclerViewBooks.adapter = bookAdapter // Устанавливаем адаптер
-                binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext()) // Устанавливаем layoutManager
+                binding.recyclerViewBooks.adapter = bookAdapter
+                binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Обработка ошибок при получении данных из Firebase
-                Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
             }
         })
     }
