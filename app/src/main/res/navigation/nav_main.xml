@@ -27,5 +27,14 @@
         android:id="@+id/settingsProfile"
         android:name="com.korobeynikova.libro.SettingsProfile"
         android:label="fragment_settings_profile"
-        tools:layout="@layout/fragment_settings_profile" />
+        tools:layout="@layout/fragment_settings_profile" >
+        <action
+            android:id="@+id/action_settingsProfile_to_editProfile"
+            app:destination="@id/editProfile" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfile"
+        android:name="com.korobeynikova.libro.EditProfile"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
 </navigation>
