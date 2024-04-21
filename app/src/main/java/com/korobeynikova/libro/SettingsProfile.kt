@@ -35,10 +35,14 @@ class SettingsProfile : Fragment() {
         database = FirebaseDatabase.getInstance().reference
 
         val logUotBtn = view.findViewById<ConstraintLayout>(R.id.exitLayout)
-        val controller = findNavController()
+        val editProfile = view.findViewById<ConstraintLayout>(R.id.editLayout)
         val exit = view.findViewById<ImageView>(R.id.exitImage)
 
-        exit.setOnClickListener { controller.navigate(R.id.startLiginOrSign) }
+        val controller = findNavController()
+
+        exit.setOnClickListener { controller.navigate(R.id.profile) }
+
+        editProfile.setOnClickListener { controller.navigate(R.id.editProfile) }
 
         logUotBtn.setOnClickListener {
             firebaseAuth.signOut()

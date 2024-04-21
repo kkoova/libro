@@ -1,59 +1,109 @@
 package com.korobeynikova.libro
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.korobeynikova.libro.databinding.FragmentEditProfileBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EditProfile.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EditProfile : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentEditProfileBinding
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+        firebaseAuth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EditProfile.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EditProfile().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val controller = findNavController()
+        val exit = view.findViewById<ImageView>(R.id.exitImage)
+        val text = view.findViewById<TextView>(R.id.textView15)
+
+        exit.setOnClickListener { controller.navigate(R.id.settingsProfile) }
+        //text.text = "настройки"
+
+        val currentUser = firebaseAuth.currentUser
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+        if (currentUser != null) {
+            database.child("users").child(uid).get()
+                .addOnSuccessListener {
+                    val login = it.child("username").value.toString()
+                    val password = it.child("password").value.toString()
+                    binding.loginTextText.setText(login)
+                    binding.emalTextText.setText(password)
+                }.addOnFailureListener {
+                    //Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
                 }
+        } else {
+            // Пользователь не вошел в аккаунт
+            val intent = Intent(context, MainLog::class.java)
+            startActivity(intent)
+            MainActivity().finish()
+        }
+
+        binding.saveBtn.setOnClickListener {
+            if (binding.emalTextText.text.isEmpty() || binding.loginTextText.text.isEmpty()){
+                Toast.makeText(requireContext(), "Заполните поля", Toast.LENGTH_SHORT).show()
+            } else {
+
+                val login = binding.loginTextText.text.toString()
+                val password = binding.emalTextText.text.toString().trim()
+
+                var user = firebaseAuth.currentUser
+                user?.updatePassword(password)
+                    ?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Адрес электронной почты успешно обновлен
+                            Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Ошибка при обновлении адреса электронной почты
+                            Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                database.child("users").child(uid).child("username").setValue(login)
+                database.child("users").child(uid).child("password").setValue(password)
+
+                Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.deliteBtn.setOnClickListener {
+            val user = FirebaseAuth.getInstance().currentUser
+            user?.delete()
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Аккаунт успешно удален
+                        database.child("users").child(uid).removeValue()
+                        Toast.makeText(requireContext(), "Аккаунт успешно удален", Toast.LENGTH_SHORT).show()
+                        // Перенаправление на экран входа или другую подходящую страницу
+                        val intent = Intent(requireContext(), MainLog::class.java)
+                        startActivity(intent)
+                        MainActivity().finish()
+                    } else {
+                        // Ошибка при удалении аккаунта
+                        Toast.makeText(requireContext(), "Ошибка при удалении аккаунта: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
     }
 }

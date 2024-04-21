@@ -67,7 +67,8 @@ class SignUpLibro : Fragment() {
                         "email" to singUserEmail,
                         "stars" to 100,
                         "like" to 0,
-                        "all" to 0
+                        "all" to 0,
+                        "password" to singUserPassword
                     )
 
                     userReference.setValue(userData)
