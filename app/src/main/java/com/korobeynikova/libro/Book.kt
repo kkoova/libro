@@ -1,3 +1,3 @@
 package com.korobeynikova.libro
 
-data class Book(val title: String)
+data class Book(val title: String, val path: String)

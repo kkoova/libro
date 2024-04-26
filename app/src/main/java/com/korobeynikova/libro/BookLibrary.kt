@@ -135,7 +135,8 @@ class BookLibrary : Fragment(), BookItemClickListener {
                 for (snapshot in dataSnapshot.children) {
                     val title = snapshot.child("title").getValue(String::class.java)
                     title?.let {
-                        val book = Book(it)
+                        val path = "books/" + snapshot.ref.parent!!.key + "/" + snapshot.key
+                        val book = Book(it, path)
                         booksList.add(book)
                     }
                 }
@@ -153,7 +154,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
     override fun onBookItemClick(book: Book) {
         val bundle = Bundle()
-        bundle.putString("bookTitle", book.title)
+        bundle.putString("bookPath", book.path)
 
         val navController = findNavController()
         navController.navigate(R.id.startBook, bundle)
