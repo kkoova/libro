@@ -42,6 +42,8 @@ class EditProfile : Fragment() {
 
         val currentUser = firebaseAuth.currentUser
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        binding.progressBar.visibility = View.VISIBLE
+        binding.saveBtn.visibility = View.INVISIBLE
 
         if (currentUser != null) {
             database.child("users").child(uid).get()
@@ -50,8 +52,11 @@ class EditProfile : Fragment() {
                     val password = it.child("password").value.toString()
                     binding.loginTextText.setText(login)
                     binding.emalTextText.setText(password)
+                    binding.progressBar.visibility = View.GONE
+                    binding.saveBtn.visibility = View.VISIBLE
                 }.addOnFailureListener {
-                    //Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
+                    binding.progressBar.visibility = View.GONE
+                    binding.saveBtn.visibility = View.VISIBLE
                 }
         } else {
             // Пользователь не вошел в аккаунт
@@ -85,25 +90,6 @@ class EditProfile : Fragment() {
 
                 Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        binding.deliteBtn.setOnClickListener {
-            val user = FirebaseAuth.getInstance().currentUser
-            user?.delete()
-                ?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Аккаунт успешно удален
-                        database.child("users").child(uid).removeValue()
-                        Toast.makeText(requireContext(), "Аккаунт успешно удален", Toast.LENGTH_SHORT).show()
-                        // Перенаправление на экран входа или другую подходящую страницу
-                        val intent = Intent(requireContext(), MainLog::class.java)
-                        startActivity(intent)
-                        MainActivity().finish()
-                    } else {
-                        // Ошибка при удалении аккаунта
-                        Toast.makeText(requireContext(), "Ошибка при удалении аккаунта: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                    }
-                }
         }
     }
 }

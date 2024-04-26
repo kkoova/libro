@@ -45,7 +45,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
+
         profileBtn = view.findViewById(R.id.profileBtn)
         firebaseAuth = FirebaseAuth.getInstance()
         binding.nineKl.setBackgroundResource(R.drawable.custom_button_black)
@@ -53,7 +53,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         buttonClick()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
-
+        setupRecyclerView()
         val book = view.findViewById<ImageView>(R.id.bookBnt)
 
         val color = ContextCompat.getColor(requireContext(), R.color.black)
@@ -131,6 +131,9 @@ class BookLibrary : Fragment(), BookItemClickListener {
         val query = FirebaseDatabase.getInstance().reference.child("books").child(bookKlass)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (binding.progressBar != null){
+                    binding.progressBar.visibility = View.GONE
+                }
                 val booksList = mutableListOf<Book>()
                 for (snapshot in dataSnapshot.children) {
                     val title = snapshot.child("title").getValue(String::class.java)

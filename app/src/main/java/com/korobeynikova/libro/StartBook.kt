@@ -53,6 +53,11 @@ class StartBook : Fragment() {
 
         databaseReference.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                if (binding.progressBar != null){
+                    binding.progressBar.visibility = View.GONE
+                }
+
                 if (dataSnapshot.exists()) {
                     val title = dataSnapshot.child("title").getValue(String::class.java)
                     val author = dataSnapshot.child("author").getValue(String::class.java)

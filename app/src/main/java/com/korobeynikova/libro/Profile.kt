@@ -43,6 +43,7 @@ class Profile : Fragment() {
         settingsBtn.setOnClickListener { controller.navigate(R.id.settingsProfile) }
         libraryBtn.setOnClickListener { controller.navigate(R.id.bookLibrary) }
 
+        binding.progressBar.visibility = View.VISIBLE
 
         database = Firebase.database.reference
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -54,8 +55,10 @@ class Profile : Fragment() {
                 binding.textProfName.text = login
                 binding.textBook.text = all
                 binding.textLikeBook.text = like
+                binding.progressBar.visibility = View.GONE
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
+                binding.progressBar.visibility = View.GONE
             }
     }
 }
