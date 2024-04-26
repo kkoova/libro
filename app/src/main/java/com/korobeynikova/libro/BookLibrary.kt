@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.korobeynikova.libro.databinding.FragmentBookLibraryBinding
 
-class BookLibrary : Fragment() {
+class BookLibrary : Fragment(), BookItemClickListener {
 
     private lateinit var profileBtn: ImageView
     private lateinit var firebaseAuth: FirebaseAuth
@@ -114,10 +114,9 @@ class BookLibrary : Fragment() {
                     binding.starsCount.text = stars
                     binding.helloTextLibr.text = "Привет, $login!"
                 }.addOnFailureListener {
-                    //Toast.makeText(requireContext(), "Данные не были загружены", Toast.LENGTH_SHORT).show()
+
                 }
         } else {
-            // Пользователь не вошел в аккаунт
             val intent = Intent(context, MainLog::class.java)
             startActivity(intent)
             MainActivity().finish()
@@ -141,7 +140,7 @@ class BookLibrary : Fragment() {
                     }
                 }
                 val backgroundImagesArray = getBackgroundImagesArray()
-                val bookAdapter = BookAdapter(booksList, backgroundImagesArray)
+                val bookAdapter = BookAdapter(booksList, backgroundImagesArray, this@BookLibrary)
                 binding.recyclerViewBooks.adapter = bookAdapter
                 binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
             }
@@ -152,11 +151,19 @@ class BookLibrary : Fragment() {
         })
     }
 
+    override fun onBookItemClick(book: Book) {
+        val bundle = Bundle()
+        bundle.putString("bookTitle", book.title)
 
-    // Метод для создания массива ресурсов изображений
+        val navController = findNavController()
+        navController.navigate(R.id.startBook, bundle)
+    }
+
     private fun getBackgroundImagesArray(): IntArray {
         return intArrayOf(R.drawable.fon_1, R.drawable.fon_2, R.drawable.fon_3, R.drawable.fon_4,
             R.drawable.fon_5, R.drawable.fon_6, R.drawable.fon_7, R.drawable.fon_8, R.drawable.fon_9,
             R.drawable.fon_10)
     }
+
+
 }

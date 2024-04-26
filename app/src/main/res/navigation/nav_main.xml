@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_bookLibrary_to_profile"
             app:destination="@id/profile" />
+        <action
+            android:id="@+id/action_bookLibrary_to_startBook"
+            app:destination="@id/startBook" />
     </fragment>
     <fragment
         android:id="@+id/profile"
@@ -37,4 +40,9 @@
         android:name="com.korobeynikova.libro.EditProfile"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/startBook"
+        android:name="com.korobeynikova.libro.StartBook"
+        android:label="fragment_start_book"
+        tools:layout="@layout/fragment_start_book" />
 </navigation>
