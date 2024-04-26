@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
@@ -18,19 +19,71 @@ import com.google.firebase.database.FirebaseDatabase
 import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
 
 class MyDialogFragment : DialogFragment() {
+
+    private var positiveText: String? = null
+    private var negativeText: String? = null
+    private var mainText: String? = null
+    private var noMainText: String? = null
+    private var positiveAction: (() -> Unit)? = null
+    private var negativeAction: (() -> Unit)? = null
+
+    fun setButtons(
+        positiveText: String,
+        negativeText: String,
+        mainText: String,
+        noMainText: String,
+        positiveAction: () -> Unit,
+        negativeAction: () -> Unit
+    ) {
+        this.positiveText = positiveText
+        this.negativeText = negativeText
+        this.mainText = mainText
+        this.noMainText = noMainText
+        this.positiveAction = positiveAction
+        this.negativeAction = negativeAction
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.card_main, container, false)
+        val view = inflater.inflate(R.layout.card_main, container, false)
+
+        // Установка текста для mainText и noMainText
+        view.findViewById<TextView>(R.id.mainText).text = mainText
+        view.findViewById<TextView>(R.id.noMainText).text = noMainText
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Ваш код для установки обработчиков событий для кнопок
+        val yesButton = view.findViewById<Button>(R.id.yesBtn)
+        val noButton = view.findViewById<Button>(R.id.noBtn)
+
+        yesButton.text = positiveText
+        noButton.text = negativeText
+
+        yesButton.setOnClickListener {
+            positiveAction?.invoke()
+            dismiss()
+        }
+
+        noButton.setOnClickListener {
+            negativeAction?.invoke()
+            dismiss()
+        }
     }
 }
 
 class SettingsProfile : Fragment() {
 
     private lateinit var binding: FragmentSettingsProfileBinding
-    private lateinit var  firebaseAuth: FirebaseAuth
+
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var dialog: MyDialogFragment
     override fun onCreateView(
@@ -54,9 +107,6 @@ class SettingsProfile : Fragment() {
         val exit = view.findViewById<ImageView>(R.id.exitImage)
 
         dialog = MyDialogFragment()
-        val yesButton = view.findViewById<Button>(R.id.yesBtn)
-        val noButton = view.findViewById<Button>(R.id.noBtn)
-
         val controller = findNavController()
 
         exit.setOnClickListener { controller.navigate(R.id.profile) }
@@ -64,36 +114,59 @@ class SettingsProfile : Fragment() {
         editProfile.setOnClickListener { controller.navigate(R.id.editProfile) }
 
         logUotBtn.setOnClickListener {
-            firebaseAuth.signOut()
-            Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, MainLog::class.java)
-            startActivity(intent)
-            MainActivity().finish()
+            val dialog = MyDialogFragment()
+            dialog.setButtons(
+                "Выйти",
+                "Отмена",
+                "Подтверждение выхода",
+                "Вы точно хотите выйти из аккаунта?",
+                {
+                    firebaseAuth.signOut()
+                    Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
+                        .show()
+                    val intent = Intent(context, MainLog::class.java)
+                    startActivity(intent)
+                    MainActivity().finish()
+                }, { })
+            dialog.show(childFragmentManager, "MyDialogFragment")
         }
 
         delliteProfile.setOnClickListener {
-            dialog.show(childFragmentManager, "MyDialogFragment")
-            yesButton.setOnClickListener {
-                val uid = FirebaseAuth.getInstance().currentUser!!.uid
-                val user = FirebaseAuth.getInstance().currentUser
-                user?.delete()
-                    ?.addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            database.child("users").child(uid).removeValue()
-                            Toast.makeText(requireContext(), "Аккаунт успешно удален", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(requireContext(), MainLog::class.java)
-                            startActivity(intent)
-                            MainActivity().finish()
-                        } else {
-                            Toast.makeText(requireContext(), "Ошибка при удалении аккаунта: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+            val dialog = MyDialogFragment()
+            dialog.setButtons(
+                "Удалить",
+                "Отмена",
+                "Подтверждение удаления",
+                "Вы точно хотите удалить аккаунт?",
+                {
+                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
+                    val user = FirebaseAuth.getInstance().currentUser
+                    user?.delete()
+                        ?.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                database.child("users").child(uid).removeValue()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Аккаунт успешно удален",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent = Intent(requireContext(), MainLog::class.java)
+                                startActivity(intent)
+                                MainActivity().finish()
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Ошибка при удалении аккаунта: ${task.exception?.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
-                dialog.dismiss() // Закрыть диалоговое окно
-            }
+                },
+                {
 
-            noButton.setOnClickListener {
-                dialog.dismiss() // Закрыть диалоговое окно
-            }
+                }
+            )
+            dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
 }
