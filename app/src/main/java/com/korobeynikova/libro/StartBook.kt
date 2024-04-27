@@ -18,12 +18,21 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.FirebaseFirestore
 import com.korobeynikova.libro.databinding.FragmentStartBookBinding
 
 class CardTwoFragment : DialogFragment() {
+    private var positiveOneText: String? = null
     private var positiveOneAction: (() -> Unit)? = null
     private var positiveTwoAction: (() -> Unit)? = null
+    fun setButtons(
+        positiveText: String,
+        positiveAction: () -> Unit,
+        negativeAction: () -> Unit
+    ) {
+        this.positiveOneText = positiveText
+        this.positiveOneAction = positiveAction
+        this.positiveTwoAction = negativeAction
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +46,8 @@ class CardTwoFragment : DialogFragment() {
         val yesButton = view.findViewById<Button>(R.id.oneBtn)
         val noButton = view.findViewById<Button>(R.id.oneOneBtn)
 
+        yesButton.text = positiveOneText
+        noButton.text = positiveOneText
 
         yesButton.setOnClickListener {
             positiveOneAction?.invoke()
@@ -58,7 +69,7 @@ class StartBook : Fragment() {
 
 
     private lateinit var binding: FragmentStartBookBinding
-    private val db = FirebaseFirestore.getInstance()
+    private lateinit var bookGo: String
     private lateinit var dialog: CardTwoFragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,8 +84,8 @@ class StartBook : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.fonCont.setBackgroundResource(getBackgroundImagesArray().random())
         val bookPath = arguments?.getString("bookPath")
-
-        settings(bookPath.toString())
+        bookGo = bookPath.toString()
+        settings(bookGo)
 
         val exit = view.findViewById<ImageView>(R.id.exitImage)
         val like = view.findViewById<ImageView>(R.id.likeImage)
@@ -119,6 +130,18 @@ class StartBook : Fragment() {
 
         binding.button.setOnClickListener {
             dialog.show(childFragmentManager, "CardTwoFragment")
+
+            val dialog = CardTwoFragment()
+            dialog.setButtons(
+                "Читать",
+                {
+                    val bundle = Bundle()
+                    bundle.putString("bookPath", bookGo)
+
+                    val navController = findNavController()
+                    navController.navigate(R.id.readBook, bundle)
+                }, {})
+            dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
 }

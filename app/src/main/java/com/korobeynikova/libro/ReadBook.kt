@@ -1,59 +1,82 @@
 package com.korobeynikova.libro
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.korobeynikova.libro.databinding.FragmentReadBookBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ReadBook.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ReadBook : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private lateinit var binding: FragmentReadBookBinding
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var chapterAdapter: ChapterAdapter
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        binding = FragmentReadBookBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_read_book, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val bookPath = arguments?.getString("bookPath")
+        fetchBookTextFromFirebase(bookPath.toString())
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ReadBook.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ReadBook().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun fetchBookTextFromFirebase(path: String) {
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        databaseReference.child(path).child("text").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (binding.progressBar != null) {
+                    binding.progressBar.visibility = View.GONE
+                }
+                if (snapshot.exists()) {
+                    val bookText = snapshot.getValue(String::class.java)
+                    val chapters = splitTextIntoChapters(bookText)
+                    updateRecyclerView(chapters)
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Ошибка при выполнении запроса", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun splitTextIntoChapters(text: String?): List<String> {
+        val chapters = mutableListOf<String>()
+
+        text?.let {
+            val chapterRegex = Regex("Глава \\d+")
+
+            val matches = chapterRegex.findAll(text)
+            var prevChapterIndex = 0
+
+            matches.forEach { matchResult ->
+                val chapterIndex = matchResult.range.first
+                val chapterText = text.substring(prevChapterIndex, chapterIndex).trim()
+                chapters.add(chapterText)
+                prevChapterIndex = chapterIndex
+            }
+
+            if (prevChapterIndex < text.length) {
+                val lastChapterText = text.substring(prevChapterIndex).trim()
+                chapters.add(lastChapterText)
+            }
+        }
+
+        return chapters
+    }
+
+    private fun updateRecyclerView(chapters: List<String>) {
+        chapterAdapter.setData(chapters)
     }
 }
