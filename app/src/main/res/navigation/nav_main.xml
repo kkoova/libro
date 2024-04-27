@@ -44,5 +44,14 @@
         android:id="@+id/startBook"
         android:name="com.korobeynikova.libro.StartBook"
         android:label="fragment_start_book"
-        tools:layout="@layout/fragment_start_book" />
+        tools:layout="@layout/fragment_start_book" >
+        <action
+            android:id="@+id/action_startBook_to_readBook"
+            app:destination="@id/readBook" />
+    </fragment>
+    <fragment
+        android:id="@+id/readBook"
+        android:name="com.korobeynikova.libro.ReadBook"
+        android:label="fragment_read_book"
+        tools:layout="@layout/fragment_read_book" />
 </navigation>

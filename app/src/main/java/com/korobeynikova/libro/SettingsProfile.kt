@@ -1,6 +1,9 @@
 package com.korobeynikova.libro
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +53,6 @@ class MyDialogFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.card_main, container, false)
 
-        // Установка текста для mainText и noMainText
         view.findViewById<TextView>(R.id.mainText).text = mainText
         view.findViewById<TextView>(R.id.noMainText).text = noMainText
 
@@ -60,7 +62,6 @@ class MyDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ваш код для установки обработчиков событий для кнопок
         val yesButton = view.findViewById<Button>(R.id.yesBtn)
         val noButton = view.findViewById<Button>(R.id.noBtn)
 
@@ -77,12 +78,16 @@ class MyDialogFragment : DialogFragment() {
             dismiss()
         }
     }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return dialog
+    }
 }
 
 class SettingsProfile : Fragment() {
 
     private lateinit var binding: FragmentSettingsProfileBinding
-
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var dialog: MyDialogFragment
