@@ -11,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 class ChapterAdapter(private var chapters: List<String>) :
     RecyclerView.Adapter<ChapterAdapter.ChapterViewHolder>() {
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_item, parent, false)
+        return ChapterViewHolder(view)
+    }
+
     inner class ChapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val chapterTextView: TextView = itemView.findViewById(R.id.textBookRes)
 
@@ -18,11 +23,6 @@ class ChapterAdapter(private var chapters: List<String>) :
             Log.d("ReadBook", "chapters2: $chapter")
             chapterTextView.text = chapter
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_item, parent, false)
-        return ChapterViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ChapterViewHolder, position: Int) {

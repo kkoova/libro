@@ -35,7 +35,7 @@ class ReadBook : Fragment() {
         chapterAdapter = ChapterAdapter(emptyList())
         recyclerView = binding.bookText
         recyclerView.adapter = chapterAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         fetchBookTextFromFirebase(bookPath.toString())
 
