@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 class ChapterAdapter(private var chapters: List<String>) :
@@ -18,20 +20,33 @@ class ChapterAdapter(private var chapters: List<String>) :
 
     inner class ChapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val chapterTextView: TextView = itemView.findViewById(R.id.textBookRes)
+        val nextChapterButton: Button = itemView.findViewById(R.id.gallBtn)
 
         fun bind(chapter: String) {
-            Log.d("ReadBook", "chapters2: $chapter")
             chapterTextView.text = chapter
         }
     }
 
+
     override fun onBindViewHolder(holder: ChapterViewHolder, position: Int) {
-        val chapter = chapters[position]
-        holder.bind(chapter)
+        if (position == chapters.size) {
+            if (position != 0){                 Log.d("ReadBook", "chapters2: $position")
+                holder.nextChapterButton.visibility = View.VISIBLE
+                holder.nextChapterButton.setOnClickListener {
+                    Toast.makeText(holder.itemView.context, "Button Clicked", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        } else {
+            // Обычный элемент списка
+            val chapter = chapters[position]
+            holder.bind(chapter)
+        }
     }
 
+
     override fun getItemCount(): Int {
-        return chapters.size
+        return chapters.size + 1
     }
 
     @SuppressLint("NotifyDataSetChanged")

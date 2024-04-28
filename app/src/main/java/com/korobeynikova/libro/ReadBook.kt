@@ -1,14 +1,15 @@
 package com.korobeynikova.libro
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -37,11 +38,8 @@ class ReadBook : Fragment() {
         recyclerView.adapter = chapterAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+
         fetchBookTextFromFirebase(bookPath.toString())
-
-        createChapterMenu()
-
-        setChapterMenuListeners()
     }
 
     private fun fetchBookTextFromFirebase(path: String) {
@@ -55,6 +53,9 @@ class ReadBook : Fragment() {
                     val bookText = snapshot.getValue(String::class.java)
                     val chapters = splitTextIntoChapters(bookText)
                     updateRecyclerView(chapters)
+
+                    createChapterMenu()
+                    setChapterMenuListeners()
                 }
             }
 
@@ -65,29 +66,42 @@ class ReadBook : Fragment() {
     }
 
     private fun createChapterMenu() {
-        binding.chapterMenu.removeAllViews()
+        val chapterMenu = binding.chapterMenu
+        chapterMenu.removeAllViews()
 
         val chapters = chapterAdapter.getData()
         for ((index, chapter) in chapters.withIndex()) {
-            val chapterButton = Button(requireContext())
-            chapterButton.text = "Глава ${index + 1}"
-            binding.chapterMenu.addView(chapterButton)
+            val chapterTextView = TextView(requireContext())
+            chapterTextView.text = "Глава ${index + 1}"
+            chapterTextView.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.special_grey))
+            chapterTextView.setOnClickListener {
+                chapterTextView.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.black))
+            }
+            chapterMenu.addView(chapterTextView)
         }
     }
+
 
     private fun setChapterMenuListeners() {
         val chapters = chapterAdapter.getData()
 
         for ((index, _) in chapters.withIndex()) {
-            val chapterButton = binding.chapterMenu.getChildAt(index) as Button
-            chapterButton.setOnClickListener {
-                scrollToChapter(index)
+            val chapterTextView = binding.chapterMenu.getChildAt(index) as TextView
+            chapterTextView.setOnClickListener {
+                smoothScrollToChapter(index)
             }
         }
     }
 
-    private fun scrollToChapter(chapterIndex: Int) {
-        recyclerView.scrollToPosition(chapterIndex)
+    private fun smoothScrollToChapter(position: Int) {
+        val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val smoothScroller = object : LinearSmoothScroller(requireContext()) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+        smoothScroller.targetPosition = position
+        linearLayoutManager.startSmoothScroll(smoothScroller)
     }
 
     private fun splitTextIntoChapters(text: String?): List<String> {
@@ -102,7 +116,6 @@ class ReadBook : Fragment() {
                 chapters.add(matchResult.value.trim())
             }
         }
-        Log.d("ReadBook", "int: $chapters")
         return chapters
     }
     private fun updateRecyclerView(chapters: List<String>) {
