@@ -1,5 +1,7 @@
 package com.korobeynikova.libro
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ class ChapterAdapter(private var chapters: List<String>) :
         private val chapterTextView: TextView = itemView.findViewById(R.id.textBookRes)
 
         fun bind(chapter: String) {
+            Log.d("ReadBook", "chapters2: $chapter")
             chapterTextView.text = chapter
         }
     }
@@ -31,8 +34,13 @@ class ChapterAdapter(private var chapters: List<String>) :
         return chapters.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(chapters: List<String>) {
         this.chapters = chapters
         notifyDataSetChanged()
+    }
+
+    fun getData(): List<String> {
+        return chapters
     }
 }

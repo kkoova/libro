@@ -1,11 +1,14 @@
 package com.korobeynikova.libro
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,7 +31,17 @@ class ReadBook : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val bookPath = arguments?.getString("bookPath")
+
+        chapterAdapter = ChapterAdapter(emptyList())
+        recyclerView = binding.bookText
+        recyclerView.adapter = chapterAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
         fetchBookTextFromFirebase(bookPath.toString())
+
+        createChapterMenu()
+
+        setChapterMenuListeners()
     }
 
     private fun fetchBookTextFromFirebase(path: String) {
@@ -51,31 +64,47 @@ class ReadBook : Fragment() {
         })
     }
 
+    private fun createChapterMenu() {
+        binding.chapterMenu.removeAllViews()
+
+        val chapters = chapterAdapter.getData()
+        for ((index, chapter) in chapters.withIndex()) {
+            val chapterButton = Button(requireContext())
+            chapterButton.text = "Глава ${index + 1}"
+            binding.chapterMenu.addView(chapterButton)
+        }
+    }
+
+    private fun setChapterMenuListeners() {
+        val chapters = chapterAdapter.getData()
+
+        for ((index, _) in chapters.withIndex()) {
+            val chapterButton = binding.chapterMenu.getChildAt(index) as Button
+            chapterButton.setOnClickListener {
+                scrollToChapter(index)
+            }
+        }
+    }
+
+    private fun scrollToChapter(chapterIndex: Int) {
+        recyclerView.scrollToPosition(chapterIndex)
+    }
+
     private fun splitTextIntoChapters(text: String?): List<String> {
         val chapters = mutableListOf<String>()
 
         text?.let {
-            val chapterRegex = Regex("Глава \\d+")
 
-            val matches = chapterRegex.findAll(text)
-            var prevChapterIndex = 0
+            val regex = Regex("(Глава \\d+)(.*?)(?=Глава \\d+|$)")
+            val matches = regex.findAll(it)
 
             matches.forEach { matchResult ->
-                val chapterIndex = matchResult.range.first
-                val chapterText = text.substring(prevChapterIndex, chapterIndex).trim()
-                chapters.add(chapterText)
-                prevChapterIndex = chapterIndex
-            }
-
-            if (prevChapterIndex < text.length) {
-                val lastChapterText = text.substring(prevChapterIndex).trim()
-                chapters.add(lastChapterText)
+                chapters.add(matchResult.value.trim())
             }
         }
-
+        Log.d("ReadBook", "int: $chapters")
         return chapters
     }
-
     private fun updateRecyclerView(chapters: List<String>) {
         chapterAdapter.setData(chapters)
     }

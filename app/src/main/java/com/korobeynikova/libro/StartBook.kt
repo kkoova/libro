@@ -129,8 +129,6 @@ class StartBook : Fragment() {
         })
 
         binding.button.setOnClickListener {
-            dialog.show(childFragmentManager, "CardTwoFragment")
-
             val dialog = CardTwoFragment()
             dialog.setButtons(
                 "Читать",
