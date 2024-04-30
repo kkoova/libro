@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/card_main_bg"
-        android:backgroundTint="@color/special_white"
+        android:backgroundTint="@color/special_red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
