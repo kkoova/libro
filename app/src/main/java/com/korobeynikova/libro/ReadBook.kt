@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -60,7 +60,7 @@ class ReadBook : Fragment() {
         val newWidth: Int
         val menuLayoutParams = scrollView.layoutParams
 
-        if (isMenuVisible) {
+        if (!isMenuVisible) {
             newWidth = 70.dpToPx()
         } else {
             newWidth = 1.dpToPx()
@@ -108,16 +108,16 @@ class ReadBook : Fragment() {
     private fun createChapterMenu() {
         val chapterMenu = binding.chapterMenu
         chapterMenu.removeAllViews()
-
+        val inflater = LayoutInflater.from(requireContext())
         val chapters = chapterAdapter.getData()
         for ((index, chapter) in chapters.withIndex()) {
-            val chapterTextView = TextView(requireContext())
-            chapterTextView.text = "Глава ${index + 1}"
-            chapterTextView.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.special_grey))
-            chapterTextView.setOnClickListener {
-                chapterTextView.setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.black))
-            }
-            chapterMenu.addView(chapterTextView)
+            val chapterView = inflater.inflate(R.layout.chapter_template, null)
+
+            val chapterTitleTextView = chapterView.findViewById<TextView>(R.id.chapterTitle)
+
+            chapterTitleTextView.text = "Глава ${index + 1}"
+
+            chapterMenu.addView(chapterView)
         }
     }
 
@@ -126,13 +126,18 @@ class ReadBook : Fragment() {
         val chapters = chapterAdapter.getData()
 
         for ((index, _) in chapters.withIndex()) {
-            val chapterTextView = binding.chapterMenu.getChildAt(index) as TextView
-            chapterTextView.setOnClickListener {
-                smoothScrollToChapter(index)
+            val view = binding.chapterMenu.getChildAt(index)
+
+            if (view is LinearLayout) {
+                // Находим внутренний TextView в LinearLayout
+                val textView = view.findViewById<TextView>(R.id.chapterTitle)
+
+                textView.setOnClickListener {
+                    smoothScrollToChapter(index)
+                }
             }
         }
     }
-
     private fun smoothScrollToChapter(position: Int) {
         val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
         val smoothScroller = object : LinearSmoothScroller(requireContext()) {
