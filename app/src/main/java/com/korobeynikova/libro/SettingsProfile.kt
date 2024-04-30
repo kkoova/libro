@@ -125,13 +125,17 @@ class MyDialogEdit : DialogFragment() {
             val loginEditText = view.findViewById<EditText>(R.id.loginTextText)
 
             positiveAction?.invoke(emailEditText.text.toString(), loginEditText.text.toString())
-            dismiss()
         }
 
         noButton.setOnClickListener {
             negativeAction?.invoke()
             dismiss()
         }
+    }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return dialog
     }
 }
 
@@ -187,6 +191,7 @@ class SettingsProfile : Fragment() {
                                 } else {
                                     Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
+                                dialog.dismiss()
                             }
 
                         database.child("users").child(uid).child("username").setValue(login)

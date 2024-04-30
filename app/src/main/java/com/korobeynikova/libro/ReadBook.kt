@@ -1,9 +1,13 @@
 package com.korobeynikova.libro
 
+import android.animation.ValueAnimator
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -17,11 +21,15 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.korobeynikova.libro.databinding.FragmentReadBookBinding
 
+
 class ReadBook : Fragment() {
 
     private lateinit var binding: FragmentReadBookBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var chapterAdapter: ChapterAdapter
+    private var isMenuVisible = true
+    private lateinit var scrollView: ScrollView
+    private lateinit var bookText: RecyclerView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentReadBookBinding.inflate(inflater, container, false)
@@ -31,6 +39,8 @@ class ReadBook : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        scrollView = view.findViewById(R.id.menu)
+        bookText = view.findViewById(R.id.bookText)
         val bookPath = arguments?.getString("bookPath")
 
         chapterAdapter = ChapterAdapter(emptyList())
@@ -40,8 +50,38 @@ class ReadBook : Fragment() {
 
 
         fetchBookTextFromFirebase(bookPath.toString())
+
+        binding.noMenuImage.setOnClickListener {
+            toggleMenu()
+        }
     }
 
+    private fun toggleMenu() {
+        val newWidth: Int
+        val menuLayoutParams = scrollView.layoutParams
+
+        if (isMenuVisible) {
+            newWidth = 70.dpToPx()
+        } else {
+            newWidth = 1.dpToPx()
+        }
+
+        val menuAnimation = ValueAnimator.ofInt(scrollView.width, newWidth)
+        menuAnimation.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            menuLayoutParams.width = animatedValue
+            scrollView.layoutParams = menuLayoutParams
+        }
+        menuAnimation.duration = 300
+        menuAnimation.interpolator = AccelerateDecelerateInterpolator()
+
+        menuAnimation.start()
+
+        isMenuVisible = !isMenuVisible
+    }
+    fun Int.dpToPx(): Int {
+        return (this * Resources.getSystem().displayMetrics.density).toInt()
+    }
     private fun fetchBookTextFromFirebase(path: String) {
         val databaseReference = FirebaseDatabase.getInstance().reference
         databaseReference.child(path).child("text").addListenerForSingleValueEvent(object : ValueEventListener {

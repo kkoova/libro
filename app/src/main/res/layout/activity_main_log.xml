@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainLog"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/special_red">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
