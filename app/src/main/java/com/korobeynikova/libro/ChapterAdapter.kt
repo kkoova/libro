@@ -1,16 +1,14 @@
 package com.korobeynikova.libro
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class ChapterAdapter(private var chapters: List<String>) :
+class ChapterAdapter(private var chapters: List<String>, private var textSize: Float = 16f) :
     RecyclerView.Adapter<ChapterAdapter.ChapterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterViewHolder {
@@ -20,7 +18,6 @@ class ChapterAdapter(private var chapters: List<String>) :
 
     inner class ChapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val chapterTextView: TextView = itemView.findViewById(R.id.textBookRes)
-        val nextChapterButton: Button = itemView.findViewById(R.id.gallBtn)
 
         fun bind(chapter: String) {
             chapterTextView.text = chapter
@@ -29,24 +26,29 @@ class ChapterAdapter(private var chapters: List<String>) :
 
 
     override fun onBindViewHolder(holder: ChapterViewHolder, position: Int) {
-        if (position == chapters.size) {
-            if (position != 0){                 Log.d("ReadBook", "chapters2: $position")
-                holder.nextChapterButton.visibility = View.VISIBLE
-                holder.nextChapterButton.setOnClickListener {
-                    Toast.makeText(holder.itemView.context, "Button Clicked", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
+        if (position == chapters.size && chapters.isNotEmpty()) { // Последний элемент списка и список не пустой
+
         } else {
-            // Обычный элемент списка
-            val chapter = chapters[position]
-            holder.bind(chapter)
+            if (chapters.isNotEmpty()) {
+                val chapter = chapters[position]
+                holder.bind(chapter)
+
+                val textView = holder.itemView.findViewById<TextView>(R.id.textBookRes)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
+            }
         }
     }
 
 
+
+    fun setTextSize(size: Float) {
+        textSize = size
+    }
+    fun getTextSize(): Float {
+        return textSize
+    }
     override fun getItemCount(): Int {
-        return chapters.size + 1
+        return chapters.size
     }
 
     @SuppressLint("NotifyDataSetChanged")

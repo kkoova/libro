@@ -12,6 +12,6 @@
         android:gravity="center"
         android:rotation="-90"
         android:text="прааааа"
-        android:textColor="@color/black"
+        android:textColor="#9DAFA9"
         android:textSize="14sp" />
 </LinearLayout>

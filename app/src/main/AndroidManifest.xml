@@ -25,6 +25,10 @@
         <activity
             android:name=".MainLog"
             android:screenOrientation="portrait"/>
+
+        <meta-data
+            android:name=""
+            android:value=""/>
     </application>
 
 </manifest>

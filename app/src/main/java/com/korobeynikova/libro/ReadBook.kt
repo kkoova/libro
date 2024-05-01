@@ -7,11 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -41,19 +45,95 @@ class ReadBook : Fragment() {
 
         scrollView = view.findViewById(R.id.menu)
         bookText = view.findViewById(R.id.bookText)
+
         val bookPath = arguments?.getString("bookPath")
+        val vid = arguments?.getString("vid")
+        val text = arguments?.getString("text")
+        val exit = view.findViewById<ImageView>(R.id.exitImage)
+        val nextChapterButton = view.findViewById<Button>(R.id.nextChapterButton)
 
         chapterAdapter = ChapterAdapter(emptyList())
         recyclerView = binding.bookText
         recyclerView.adapter = chapterAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        binding.bottonBookTitle.text = vid
 
-        fetchBookTextFromFirebase(bookPath.toString())
+        if (bookPath != null) {
+            settings(bookPath)
+        }
+
+        fetchBookTextFromFirebase(bookPath.toString(), text.toString())
 
         binding.noMenuImage.setOnClickListener {
             toggleMenu()
         }
+        val controller = findNavController()
+        exit.setOnClickListener { controller.navigate(R.id.bookLibrary) }
+
+        binding.increaseTextButton.setOnClickListener {
+            increaseTextSize()
+        }
+
+        binding.decreaseTextButton.setOnClickListener {
+            decreaseTextSize()
+        }
+
+        nextChapterButton.setOnClickListener {
+
+        }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                val totalItemCount = layoutManager.itemCount
+
+                if (lastVisibleItemPosition == totalItemCount - 1) {
+                    nextChapterButton.visibility = View.VISIBLE
+                } else {
+                    nextChapterButton.visibility = View.GONE
+                }
+            }
+        })
+
+    }
+
+    private fun increaseTextSize() {
+        val newTextSize = chapterAdapter.getTextSize() + 2
+        chapterAdapter.setTextSize(newTextSize)
+        chapterAdapter.notifyDataSetChanged()
+    }
+
+    private fun decreaseTextSize() {
+        val newTextSize = chapterAdapter.getTextSize() - 2
+        chapterAdapter.setTextSize(newTextSize)
+        chapterAdapter.notifyDataSetChanged()
+    }
+    private fun settings(path: String) {
+
+        val databaseReference = FirebaseDatabase.getInstance().reference
+
+        databaseReference.child(path).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                if (binding.progressBar != null){
+                    binding.progressBar.visibility = View.GONE
+                }
+
+                if (dataSnapshot.exists()) {
+                    val title = dataSnapshot.child("title").getValue(String::class.java)
+                    binding.titleBookText.text = title
+                } else {
+
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(requireContext(), "Ошибка при выполнении запроса", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun toggleMenu() {
@@ -82,13 +162,15 @@ class ReadBook : Fragment() {
     fun Int.dpToPx(): Int {
         return (this * Resources.getSystem().displayMetrics.density).toInt()
     }
-    private fun fetchBookTextFromFirebase(path: String) {
+    private fun fetchBookTextFromFirebase(path: String, text: String) {
         val databaseReference = FirebaseDatabase.getInstance().reference
-        databaseReference.child(path).child("text").addListenerForSingleValueEvent(object : ValueEventListener {
+        databaseReference.child(path).child(text).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (binding.progressBar != null) {
                     binding.progressBar.visibility = View.GONE
+                    binding.nextChapterButton.visibility = View.GONE
                 }
+                binding.nextChapterButton.visibility = View.VISIBLE
                 if (snapshot.exists()) {
                     val bookText = snapshot.getValue(String::class.java)
                     val chapters = splitTextIntoChapters(bookText)
@@ -122,6 +204,7 @@ class ReadBook : Fragment() {
     }
 
 
+
     private fun setChapterMenuListeners() {
         val chapters = chapterAdapter.getData()
 
@@ -129,10 +212,11 @@ class ReadBook : Fragment() {
             val view = binding.chapterMenu.getChildAt(index)
 
             if (view is LinearLayout) {
-                // Находим внутренний TextView в LinearLayout
                 val textView = view.findViewById<TextView>(R.id.chapterTitle)
 
                 textView.setOnClickListener {
+                    val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_animation)
+                    textView.startAnimation(animation)
                     smoothScrollToChapter(index)
                 }
             }
