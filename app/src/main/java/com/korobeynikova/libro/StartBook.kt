@@ -125,8 +125,6 @@ class StartBook : Fragment() {
                     binding.titleText.text = title
                     binding.autorText.text = author
                     binding.ageText.text = age
-                } else {
-
                 }
             }
 
