@@ -5,12 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.gms.ads.rewarded.RewardedAd
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-
-    private var rewardedAd: RewardedAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

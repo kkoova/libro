@@ -23,10 +23,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.korobeynikova.libro.databinding.FragmentBookLibraryBinding
-import com.yandex.mobile.ads.common.MobileAds
-import com.yandex.mobile.ads.rewarded.RewardedAd
 
-const val AD_ID = ""
 class BookLibrary : Fragment(), BookItemClickListener {
 
     private lateinit var profileBtn: ImageView
@@ -35,7 +32,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
     private lateinit var database: DatabaseReference
     private lateinit var recyclerViewBooks: RecyclerView
     private lateinit var bookKlass: String
-    private var rewardedAd: RewardedAd? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,54 +58,11 @@ class BookLibrary : Fragment(), BookItemClickListener {
         book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         text()
 
-        MobileAds.initialize(requireContext()) {}
-
-        loadRewardedAd()
-
         binding.floofers.setOnClickListener {
-            rewardedAd?.show(requireActivity()) {}
-                database = FirebaseDatabase.getInstance().reference
-                val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
-                database.child("users").child(uid).get()
-                    .addOnSuccessListener { dataSnapshot ->
-                        val starsValue = dataSnapshot.child("stars").value
-                        val stars = starsValue.toString().toInt()
-                        val newStars = (stars + 35).toString()
-                        database.child("users").child(uid).child("stars").setValue(newStars)
-                    }
-                Toast.makeText(requireContext(), "Поздравляю! вы получили 35 цветочков", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun loadRewardedAd() {
-        // Initialize rewarded ad
-        rewardedAd = RewardedAd(requireContext(), "8167134")
-
-        // Set rewarded ad event listener
-        rewardedAd?.setRewardedAdEventListener(object : RewardedAdEventListener() {
-            override fun onRewarded(ad: RewardedAd) {
-                // Handle rewarded ad event
-                Toast.makeText(requireContext(), "Rewarded!", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onRewardedFailedToLoad(ad: RewardedAd) {
-                // Handle rewarded ad failed to load event
-                Toast.makeText(requireContext(), "Failed to load rewarded ad", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onRewardedStarted(ad: RewardedAd) {
-                // Handle rewarded ad started event
-            }
-
-            override fun onRewardedStopped(ad: RewardedAd) {
-                // Handle rewarded ad stopped event
-            }
-        })
-
-        // Load rewarded ad
-        rewardedAd?.loadAd()
-    }
 
     private fun text(){
         val clickListener = View.OnClickListener { view ->
