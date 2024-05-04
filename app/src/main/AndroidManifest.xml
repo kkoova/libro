@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -17,7 +16,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,11 +26,8 @@
         </activity>
         <activity
             android:name=".MainLog"
-            android:screenOrientation="portrait"/>
-
-        <meta-data
-            android:name=""
-            android:value=""/>
+            android:screenOrientation="fullSensor"
+            tools:ignore="DiscouragedApi" />
     </application>
 
 </manifest>

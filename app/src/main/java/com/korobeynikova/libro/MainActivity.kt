@@ -1,7 +1,6 @@
 package com.korobeynikova.libro
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
             // Установка цвета системных иконок
             ViewCompat.getWindowInsetsController(v)?.apply {
-                isAppearanceLightStatusBars = true
+                this.isAppearanceLightStatusBars = true
                 isAppearanceLightNavigationBars = true
             }
 
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadRewAd(){
-        val adRewardConfiguration = AdRequestConfiguration.Builder("demo-reward-yandex").build()
+        val adRewardConfiguration = AdRequestConfiguration.Builder("demo-rewarded-yandex").build()
         rewardedAdLoader?.loadAd(adRewardConfiguration)
     }
 
@@ -71,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         rewardedAd?.apply {
             setAdEventListener(object : RewardedAdEventListener {
                 override fun onAdClicked() {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onAdDismissed() {
@@ -85,11 +84,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onAdImpression(impressionData: ImpressionData?) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onAdShown() {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onRewarded(reward: Reward) {
