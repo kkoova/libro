@@ -59,7 +59,16 @@ class BookLibrary : Fragment(), BookItemClickListener {
         text()
 
         binding.floofers.setOnClickListener {
-
+            val dialog = MyDialogFragment()
+            dialog.setButtons(
+                "Реклама",
+                "Отмена",
+                "Получение цветочков",
+                "По просмотру рекламы, вы получите 35 цветочков",
+                {
+                    (activity as MainActivity?)?.showAd()
+                }, { })
+            dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
 
