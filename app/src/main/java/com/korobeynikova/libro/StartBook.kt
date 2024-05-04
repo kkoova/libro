@@ -72,7 +72,6 @@ class CardTwoFragment : DialogFragment() {
 }
 class StartBook : Fragment() {
 
-
     private lateinit var binding: FragmentStartBookBinding
     private lateinit var bookGo: String
     private lateinit var dialog: CardTwoFragment
@@ -155,7 +154,7 @@ class StartBook : Fragment() {
                             val starsValue = dataSnapshot.child("stars").value
                             if (starsValue != null) {
                                 val stars = starsValue.toString().toInt()
-                                if (stars > 35) {
+                                if (stars >= 35) {
                                     val newStars = (stars - 35).toString()
                                     database.child("users").child(uid).child("stars").setValue(newStars)
                                     val bundle = Bundle()

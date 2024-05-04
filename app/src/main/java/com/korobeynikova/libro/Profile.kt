@@ -41,7 +41,7 @@ class Profile : Fragment() {
         val controller = findNavController()
 
         settingsBtn.setOnClickListener { controller.navigate(R.id.settingsProfile) }
-        libraryBtn.setOnClickListener { controller.navigate(R.id.bookLibrary) }
+        libraryBtn.setOnClickListener { upDt() }
 
         binding.progressBar.visibility = View.VISIBLE
 
@@ -60,5 +60,10 @@ class Profile : Fragment() {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
                 binding.progressBar.visibility = View.GONE
             }
+    }
+
+    private fun upDt() {
+        val controller = findNavController()
+        controller.navigate(R.id.bookLibrary)
     }
 }

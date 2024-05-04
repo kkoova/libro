@@ -28,10 +28,11 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
     private lateinit var profileBtn: ImageView
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var binding: FragmentBookLibraryBinding
+    lateinit var binding: FragmentBookLibraryBinding
     private lateinit var database: DatabaseReference
     private lateinit var recyclerViewBooks: RecyclerView
     private lateinit var bookKlass: String
+    private lateinit var adListener: AdListener
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +51,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
         binding.nineKl.setTextColor(Color.WHITE)
 
         buttonClick()
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
         setupRecyclerView()
         val book = view.findViewById<ImageView>(R.id.bookBnt)
@@ -64,15 +66,19 @@ class BookLibrary : Fragment(), BookItemClickListener {
                 "Реклама",
                 "Отмена",
                 "Получение цветочков",
-                "По просмотру рекламы, вы получите 35 цветочков",
+                "По просмотру рекламы, вы получите 15 цветочков",
                 {
                     (activity as MainActivity?)?.showAd()
                 }, { })
             dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
-
-
+    fun setAdListener(listener: AdListener) {
+        adListener = listener
+    }
+    fun updateStarsCount(newStars: String) {
+        binding.starsCount.text = newStars
+    }
     private fun text(){
         val clickListener = View.OnClickListener { view ->
 
@@ -123,7 +129,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
                 .addOnSuccessListener {
                     val login = it.child("username").value.toString()
                     val stars = it.child("stars").value.toString()
-                    binding.starsCount.text = stars
+                    updateStarsCount(stars)
                     binding.helloTextLibr.text = "Привет, $login!"
                 }.addOnFailureListener {
 
