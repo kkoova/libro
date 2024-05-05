@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -69,6 +70,13 @@ class MainActivity : AppCompatActivity(), AdListener {
 
         val bookLibraryFragment = navHostFragment!!.childFragmentManager.findFragmentById(R.id.bookLibrary) as? BookLibrary
         bookLibraryFragment?.setAdListener(this)
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragmentContainerView2,fragment)
+            .commit()
     }
 
     override fun onAdWatched(newStars: String) {

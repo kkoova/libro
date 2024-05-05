@@ -45,7 +45,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        profileBtn = view.findViewById(R.id.profileBtn)
+        //profileBtn = view.findViewById(R.id.profileBtn)
         firebaseAuth = FirebaseAuth.getInstance()
         binding.nineKl.setBackgroundResource(R.drawable.custom_button_black)
         binding.nineKl.setTextColor(Color.WHITE)
@@ -54,10 +54,10 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
         setupRecyclerView()
-        val book = view.findViewById<ImageView>(R.id.bookBnt)
+        //val book = view.findViewById<ImageView>(R.id.bookBnt)
 
         val color = ContextCompat.getColor(requireContext(), R.color.black)
-        book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        //book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         text()
 
         binding.floofers.setOnClickListener {
@@ -140,9 +140,9 @@ class BookLibrary : Fragment(), BookItemClickListener {
             MainActivity().finish()
         }
 
-        profileBtn.setOnClickListener{
-            container.navigate(R.id.profile)
-        }
+        //.setOnClickListener{
+        //    container.navigate(R.id.profile)
+        //}
     }
 
     private fun setupRecyclerView() {

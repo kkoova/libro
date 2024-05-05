@@ -32,16 +32,16 @@ class Profile : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val settingsBtn = view.findViewById<ImageView>(R.id.settingsBtn)
-        val libraryBtn = view.findViewById<ImageView>(R.id.bookBnt)
-        val profile = view.findViewById<ImageView>(R.id.profileBtn)
+        //val libraryBtn = view.findViewById<ImageView>(R.id.bookBnt)
+        //val profile = view.findViewById<ImageView>(R.id.profileBtn)
 
         val color = ContextCompat.getColor(requireContext(), R.color.black)
-        profile.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        //profile.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
         val controller = findNavController()
 
         settingsBtn.setOnClickListener { controller.navigate(R.id.settingsProfile) }
-        libraryBtn.setOnClickListener { upDt() }
+        //libraryBtn.setOnClickListener { upDt() }
 
         binding.progressBar.visibility = View.VISIBLE
 

@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/serch"
-        android:icon="@drawable/search"
-        android:title="Поиск"/>
+        android:id="@+id/auto"
+        android:icon="@drawable/auto_stories"
+        android:title="Библиотека"/>
 
     <item
         android:id="@+id/profile"
