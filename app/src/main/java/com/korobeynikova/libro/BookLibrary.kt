@@ -1,5 +1,6 @@
 package com.korobeynikova.libro
 
+import android.animation.Animator
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -115,7 +116,46 @@ class BookLibrary : Fragment(), BookItemClickListener {
         binding.fiveKl.setOnClickListener(clickListener)
 
     }
+    private fun showBottomMenu() {
+        binding.bottomMenu.visibility = View.VISIBLE
+        binding.buttonToShowMenu.visibility = View.GONE  // Скрыть кнопку при появлении меню
+        binding.bottomMenu.animate()
+            .translationY(0f)
+            .alpha(1f)
+            .setDuration(300)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
 
+                override fun onAnimationEnd(animation: Animator) {}
+
+                override fun onAnimationCancel(animation: Animator) {}
+
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+    }
+
+    private fun hideBottomMenu() {
+        val height = binding.bottomMenu.height.toFloat()
+        // Установка высоты элемента на 0
+        binding.bottomMenu.layoutParams.height = height.toInt()
+
+        binding.bottomMenu.animate()
+            .translationY(height)
+            .alpha(0f)
+            .setDuration(300)
+            .setListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.bottomMenu.visibility = View.GONE
+                    binding.buttonToShowMenu.visibility = View.VISIBLE
+                }
+
+                override fun onAnimationCancel(animation: Animator) {}
+
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+    }
     private fun buttonClick(){
         val container = findNavController()
         val currentUser = firebaseAuth.currentUser
@@ -140,9 +180,9 @@ class BookLibrary : Fragment(), BookItemClickListener {
             MainActivity().finish()
         }
 
-        //.setOnClickListener{
-        //    container.navigate(R.id.profile)
-        //}
+        binding.buttonToShowMenu.setOnClickListener {
+            showBottomMenu()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -169,6 +209,15 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        recyclerViewBooks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0 && binding.bottomMenu.visibility == View.VISIBLE) {
+                    hideBottomMenu()
+                }
             }
         })
     }

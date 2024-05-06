@@ -2,6 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:title="Настройки"
+        android:id="@+id/setting"
+        android:icon="@drawable/settings"/>
+
+    <item
+        android:title="Помощь"
+        android:id="@+id/help"
+        android:icon="@drawable/help"/>
+
+    <item
         android:id="@+id/auto"
         android:icon="@drawable/auto_stories"
         android:title="Библиотека"/>
@@ -10,5 +20,10 @@
         android:id="@+id/profile"
         android:icon="@drawable/person"
         android:title="Профиль"/>
+
+    <item
+        android:title="Выйти из аккаунта"
+        android:id="@+id/logOut"
+        android:icon="@drawable/logout"/>
 
 </menu>
