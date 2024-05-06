@@ -1,6 +1,7 @@
 package com.korobeynikova.libro
 
 import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -118,44 +119,55 @@ class BookLibrary : Fragment(), BookItemClickListener {
     }
     private fun showBottomMenu() {
         binding.bottomMenu.visibility = View.VISIBLE
-        binding.buttonToShowMenu.visibility = View.GONE  // Скрыть кнопку при появлении меню
-        binding.bottomMenu.animate()
-            .translationY(0f)
-            .alpha(1f)
-            .setDuration(300)
-            .setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
+        binding.buttonToShowMenu.visibility = View.GONE
 
-                override fun onAnimationEnd(animation: Animator) {}
+        val initialHeight = 0
+        val targetHeight = dpToPx(60)
 
-                override fun onAnimationCancel(animation: Animator) {}
-
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
+        val valueAnimator = ValueAnimator.ofInt(initialHeight, targetHeight)
+        valueAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = binding.bottomMenu.layoutParams
+            layoutParams.height = value
+            binding.bottomMenu.layoutParams = layoutParams
+        }
+        valueAnimator.duration = 300
+        valueAnimator.start()
     }
 
     private fun hideBottomMenu() {
-        val height = binding.bottomMenu.height.toFloat()
-        // Установка высоты элемента на 0
-        binding.bottomMenu.layoutParams.height = height.toInt()
+        binding.buttonToShowMenu.visibility = View.VISIBLE
 
-        binding.bottomMenu.animate()
-            .translationY(height)
-            .alpha(0f)
-            .setDuration(300)
-            .setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
+        val initialHeight = binding.bottomMenu.height
+        val targetHeight = 0
 
-                override fun onAnimationEnd(animation: Animator) {
-                    binding.bottomMenu.visibility = View.GONE
-                    binding.buttonToShowMenu.visibility = View.VISIBLE
-                }
+        val valueAnimator = ValueAnimator.ofInt(initialHeight, targetHeight)
+        valueAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = binding.bottomMenu.layoutParams
+            layoutParams.height = value
+            binding.bottomMenu.layoutParams = layoutParams
+        }
+        valueAnimator.duration = 300
+        valueAnimator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
 
-                override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+                binding.bottomMenu.visibility = View.GONE
+            }
 
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
+            override fun onAnimationCancel(animation: Animator) {}
+
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+        valueAnimator.start()
     }
+
+    private fun dpToPx(dp: Int): Int {
+        val density = resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
+
     private fun buttonClick(){
         val container = findNavController()
         val currentUser = firebaseAuth.currentUser
