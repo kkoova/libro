@@ -1,6 +1,7 @@
 package com.korobeynikova.libro
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Color
@@ -41,6 +42,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
     ): View? {
         bookKlass = "nine"
         binding = FragmentBookLibraryBinding.inflate(inflater, container, false)
+        hideBottomMenu()
         return binding.root
     }
 
@@ -60,6 +62,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         val color = ContextCompat.getColor(requireContext(), R.color.black)
         //book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
         text()
 
         binding.floofers.setOnClickListener {
@@ -119,48 +122,62 @@ class BookLibrary : Fragment(), BookItemClickListener {
     }
     private fun showBottomMenu() {
         binding.bottomMenu.visibility = View.VISIBLE
-        binding.buttonToShowMenu.visibility = View.GONE
 
-        val initialHeight = 0
-        val targetHeight = dpToPx(60)
+        val initialHeightMenu = 0
+        val targetHeightMenu = dpToPx(60)
 
-        val valueAnimator = ValueAnimator.ofInt(initialHeight, targetHeight)
-        valueAnimator.addUpdateListener { animation ->
+        val initialHeightButton = dpToPx(20)
+        val targetHeightButton = 0
+
+        val menuAnimator = ValueAnimator.ofInt(initialHeightMenu, targetHeightMenu)
+        menuAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             val layoutParams = binding.bottomMenu.layoutParams
             layoutParams.height = value
             binding.bottomMenu.layoutParams = layoutParams
         }
-        valueAnimator.duration = 300
-        valueAnimator.start()
+
+        val buttonAnimator = ValueAnimator.ofInt(initialHeightButton, targetHeightButton)
+        buttonAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = binding.buttonToShowMenu.layoutParams
+            layoutParams.height = value
+            binding.buttonToShowMenu.layoutParams = layoutParams
+        }
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(menuAnimator, buttonAnimator)
+        animatorSet.duration = 300
+        animatorSet.start()
     }
 
     private fun hideBottomMenu() {
-        binding.buttonToShowMenu.visibility = View.VISIBLE
+        val initialHeightMenu = binding.bottomMenu.height
+        val targetHeightMenu = 0
 
-        val initialHeight = binding.bottomMenu.height
-        val targetHeight = 0
+        val initialHeightButton = 0
+        val targetHeightButton = dpToPx(20)
 
-        val valueAnimator = ValueAnimator.ofInt(initialHeight, targetHeight)
-        valueAnimator.addUpdateListener { animation ->
+        val menuAnimator = ValueAnimator.ofInt(initialHeightMenu, targetHeightMenu)
+        menuAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             val layoutParams = binding.bottomMenu.layoutParams
             layoutParams.height = value
             binding.bottomMenu.layoutParams = layoutParams
         }
-        valueAnimator.duration = 300
-        valueAnimator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator) {
-                binding.bottomMenu.visibility = View.GONE
-            }
+        val buttonAnimator = ValueAnimator.ofInt(initialHeightButton, targetHeightButton)
+        buttonAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = binding.buttonToShowMenu.layoutParams
+            layoutParams.height = value
+            binding.buttonToShowMenu.layoutParams = layoutParams
+        }
 
-            override fun onAnimationCancel(animation: Animator) {}
-
-            override fun onAnimationRepeat(animation: Animator) {}
-        })
-        valueAnimator.start()
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(menuAnimator, buttonAnimator)
+        animatorSet.duration = 300
+        animatorSet.start()
     }
 
     private fun dpToPx(dp: Int): Int {
