@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,13 +30,11 @@ import com.korobeynikova.libro.databinding.FragmentBookLibraryBinding
 
 class BookLibrary : Fragment(), BookItemClickListener {
 
-    private lateinit var profileBtn: ImageView
     private lateinit var firebaseAuth: FirebaseAuth
     lateinit var binding: FragmentBookLibraryBinding
     private lateinit var database: DatabaseReference
     private lateinit var recyclerViewBooks: RecyclerView
     private lateinit var bookKlass: String
-    private lateinit var adListener: AdListener
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,7 +48,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //profileBtn = view.findViewById(R.id.profileBtn)
         firebaseAuth = FirebaseAuth.getInstance()
         binding.nineKl.setBackgroundResource(R.drawable.custom_button_black)
         binding.nineKl.setTextColor(Color.WHITE)
@@ -78,10 +76,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
             dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
-    fun setAdListener(listener: AdListener) {
-        adListener = listener
-    }
-    fun updateStarsCount(newStars: String) {
+    private fun updateStarsCount(newStars: String) {
         binding.starsCount.text = newStars
     }
     private fun text(){
@@ -182,7 +177,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
     private fun dpToPx(dp: Int): Int {
         val density = resources.displayMetrics.density
-        return (dp * density).toInt()
+        return (dp * density + 0.5f).toInt()
     }
 
     private fun buttonClick(){

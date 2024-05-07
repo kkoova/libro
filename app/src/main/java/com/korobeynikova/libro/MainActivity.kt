@@ -23,11 +23,10 @@ import com.yandex.mobile.ads.rewarded.RewardedAdLoader
 
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity(), AdListener {
+class MainActivity : AppCompatActivity(){
 
     private var rewardedAd: RewardedAd? = null
     private var rewardedAdLoader: RewardedAdLoader? = null
-    private lateinit var adListener: AdListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,13 +63,6 @@ class MainActivity : AppCompatActivity(), AdListener {
 
             insets
         }
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) as? NavHostFragment
-        val navController = navHostFragment?.navController
-
-
-        val bookLibraryFragment = navHostFragment!!.childFragmentManager.findFragmentById(R.id.bookLibrary) as? BookLibrary
-        bookLibraryFragment?.setAdListener(this)
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -80,10 +72,6 @@ class MainActivity : AppCompatActivity(), AdListener {
             .commit()
     }
 
-    override fun onAdWatched(newStars: String) {
-        val bookLibraryFragment = supportFragmentManager.findFragmentById(R.id.bookLibrary) as? BookLibrary
-        bookLibraryFragment?.updateStarsCount(newStars)
-    }
 
     private fun loadRewAd(){
         val adRewardConfiguration = AdRequestConfiguration.Builder("R-M-8167134-2").build()
@@ -125,11 +113,7 @@ class MainActivity : AppCompatActivity(), AdListener {
                             val stars = starsValue.toString().toInt()
                             val newStars = (stars + 15).toString()
                             database.child("users").child(uid).child("stars").setValue(newStars)
-                            if (::adListener.isInitialized) {
-                                adListener.onAdWatched(newStars)
-                            } else {
-                                Log.d("MainActivity", "adListener is not initialized")
-                            }
+
                         }
                         .addOnCanceledListener {}
                 }
