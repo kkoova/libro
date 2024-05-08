@@ -4,31 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back_profile"
+    android:background="@drawable/background_profile"
     tools:context=".Profile">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout6"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
-        android:background="@color/special_white"
+        android:layout_height="0dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="-10dp"
+        android:background="@drawable/custom_button_red"
+        android:backgroundTint="@color/special_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textProfName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/reseva"
+            android:text="Фамилия Имя"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout7"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/custom_button_red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/textProfName">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout4"
@@ -118,18 +133,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/reseva"
             android:text="Избранные"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout7" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView3"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
@@ -151,21 +166,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textProfName"
+    <ImageView
+        android:id="@+id/exitImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="-30dp"
-        android:background="@drawable/custom_button_black"
-        android:backgroundTint="@color/special_white"
-        android:fontFamily="@font/reseva"
-        android:paddingLeft="30dp"
-        android:paddingTop="20dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="15dp"
-        android:text="Фамилия Имя"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="-35dp"
+        android:src="@drawable/profile_ona"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

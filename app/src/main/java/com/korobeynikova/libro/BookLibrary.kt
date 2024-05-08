@@ -116,7 +116,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
     }
     private fun showBottomMenu() {
         val initialMargin = binding.buttonToShowMenu.marginBottom
-        val targetMargin = dpToPx(8)
+        val targetMargin = dpToPx(-16)
 
         val marginAnimator = ValueAnimator.ofInt(initialMargin, targetMargin)
         marginAnimator.addUpdateListener { valueAnimator ->
@@ -135,6 +135,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         marginAnimator.duration = 300
         marginAnimator.start()
+        binding.buttonToShowMenu.visibility = View.INVISIBLE
     }
 
     private fun hideBottomMenu() {
@@ -158,6 +159,9 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         marginAnimator.duration = 300
         marginAnimator.start()
+        binding.buttonToShowMenu.postDelayed({
+            binding.buttonToShowMenu.visibility = View.VISIBLE
+        }, 300)
     }
     private fun dpToPx(dp: Int): Int {
         val density = resources.displayMetrics.density
@@ -167,8 +171,8 @@ class BookLibrary : Fragment(), BookItemClickListener {
     private fun buttonClick(){
         val container = findNavController()
         val currentUser = firebaseAuth.currentUser
-        database = FirebaseDatabase.getInstance().reference
 
+        database = FirebaseDatabase.getInstance().reference
         recyclerViewBooks = binding.recyclerViewBooks
 
         if (currentUser != null) {
@@ -190,6 +194,30 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         binding.buttonToShowMenu.setOnClickListener {
             showBottomMenu()
+        }
+
+        val color = ContextCompat.getColor(requireContext(), R.color.white)
+        binding.bookBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
+        binding.helpBtn.setOnClickListener {  }
+        binding.setingsBtn.setOnClickListener {  }
+        binding.profileBtn.setOnClickListener { container.navigate(R.id.profile) }
+        binding.logUotBtn.setOnClickListener {
+            val dialog = MyDialogFragment()
+            dialog.setButtons(
+                "Выйти",
+                "Отмена",
+                "Подтверждение выхода",
+                "Вы точно хотите выйти из аккаунта?",
+                {
+                    firebaseAuth.signOut()
+                    Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
+                        .show()
+                    val intent = Intent(context, MainLog::class.java)
+                    startActivity(intent)
+                    MainActivity().finish()
+                }, { })
+            dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
 

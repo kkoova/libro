@@ -32,124 +32,6 @@ import com.yandex.mobile.ads.rewarded.RewardedAdEventListener
 import com.yandex.mobile.ads.rewarded.RewardedAdLoadListener
 import com.yandex.mobile.ads.rewarded.RewardedAdLoader
 
-class MyDialogFragment : DialogFragment() {
-
-    private var positiveText: String? = null
-    private var negativeText: String? = null
-    private var mainText: String? = null
-    private var noMainText: String? = null
-    private var positiveAction: (() -> Unit)? = null
-    private var negativeAction: (() -> Unit)? = null
-
-    fun setButtons(
-        positiveText: String,
-        negativeText: String,
-        mainText: String,
-        noMainText: String,
-        positiveAction: () -> Unit,
-        negativeAction: () -> Unit
-    ) {
-        this.positiveText = positiveText
-        this.negativeText = negativeText
-        this.mainText = mainText
-        this.noMainText = noMainText
-        this.positiveAction = positiveAction
-        this.negativeAction = negativeAction
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.card_main, container, false)
-
-        view.findViewById<TextView>(R.id.mainText).text = mainText
-        view.findViewById<TextView>(R.id.noMainText).text = noMainText
-
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val yesButton = view.findViewById<Button>(R.id.yesBtn)
-        val noButton = view.findViewById<Button>(R.id.noBtn)
-
-        yesButton.text = positiveText
-        noButton.text = negativeText
-
-        yesButton.setOnClickListener {
-            positiveAction?.invoke()
-            dismiss()
-        }
-
-        noButton.setOnClickListener {
-            negativeAction?.invoke()
-            dismiss()
-        }
-    }
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        return dialog
-    }
-}
-class MyDialogEdit : DialogFragment() {
-    private var positiveText: String? = null
-    private var negativeText: String? = null
-    private var positiveAction: ((String, String) -> Unit)? = null
-    private var negativeAction: (() -> Unit)? = null
-
-    fun setButtons(
-        positiveText: String,
-        negativeText: String,
-        positiveAction: (String, String) -> Unit,
-        negativeAction: () -> Unit
-    ) {
-        this.positiveText = positiveText
-        this.negativeText = negativeText
-        this.positiveAction = positiveAction
-        this.negativeAction = negativeAction
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.card_edit, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val yesButton = view.findViewById<Button>(R.id.yesBtn2)
-        val noButton = view.findViewById<Button>(R.id.noBtn2)
-
-        yesButton.text = positiveText
-        noButton.text = negativeText
-
-        yesButton.setOnClickListener {
-            val emailEditText = view.findViewById<EditText>(R.id.emalTextText)
-            val loginEditText = view.findViewById<EditText>(R.id.loginTextText)
-
-            positiveAction?.invoke(emailEditText.text.toString(), loginEditText.text.toString())
-        }
-
-        noButton.setOnClickListener {
-            negativeAction?.invoke()
-            dismiss()
-        }
-    }
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        return dialog
-    }
-}
-
-
 class SettingsProfile : Fragment() {
 
     private lateinit var binding: FragmentSettingsProfileBinding
@@ -170,70 +52,12 @@ class SettingsProfile : Fragment() {
         database = FirebaseDatabase.getInstance().reference
 
 
-        val logUotBtn = view.findViewById<ConstraintLayout>(R.id.exitLayout)
-        val editProfile = view.findViewById<ConstraintLayout>(R.id.editLayout)
         val delliteProfile = view.findViewById<ConstraintLayout>(R.id.delliteLayout)
         val exit = view.findViewById<ImageView>(R.id.exitImage)
 
         val controller = findNavController()
 
         exit.setOnClickListener { controller.navigate(R.id.profile) }
-
-        editProfile.setOnClickListener {
-            val dialog = MyDialogEdit()
-            dialog.setButtons(
-                "Сохранить",
-                "Отмена",
-                { email: String, login: String ->
-                    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-                    val database: DatabaseReference = FirebaseDatabase.getInstance().reference
-
-                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
-
-                    if (email.isEmpty() || login.isEmpty()) {
-                        Toast.makeText(requireContext(), "Заполните поля", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val user = firebaseAuth.currentUser
-                        user?.updatePassword(email)
-                            ?.addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                                }
-                                dialog.dismiss()
-                            }
-
-                        database.child("users").child(uid).child("username").setValue(login)
-                        database.child("users").child(uid).child("password").setValue(email)
-
-                        Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                { }
-            )
-            dialog.show(childFragmentManager, "MyDialogEdit")
-        }
-
-
-
-        logUotBtn.setOnClickListener {
-            val dialog = MyDialogFragment()
-            dialog.setButtons(
-                "Выйти",
-                "Отмена",
-                "Подтверждение выхода",
-                "Вы точно хотите выйти из аккаунта?",
-                {
-                    firebaseAuth.signOut()
-                    Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
-                        .show()
-                    val intent = Intent(context, MainLog::class.java)
-                    startActivity(intent)
-                    MainActivity().finish()
-                }, { })
-            dialog.show(childFragmentManager, "MyDialogFragment")
-        }
 
         delliteProfile.setOnClickListener {
             val dialog = MyDialogFragment()
