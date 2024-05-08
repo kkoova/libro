@@ -14,7 +14,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,11 +57,8 @@ class BookLibrary : Fragment(), BookItemClickListener {
         buttonClick()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
-        setupRecyclerView()
-        //val book = view.findViewById<ImageView>(R.id.bookBnt)
 
-        val color = ContextCompat.getColor(requireContext(), R.color.black)
-        //book.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        setupRecyclerView()
 
         text()
 
@@ -116,68 +115,53 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
     }
     private fun showBottomMenu() {
-        binding.bottomMenu.visibility = View.VISIBLE
+        val initialMargin = binding.buttonToShowMenu.marginBottom
+        val targetMargin = dpToPx(8)
 
-        val initialHeightMenu = 0
-        val targetHeightMenu = dpToPx(60)
-
-        val initialHeightButton = dpToPx(20)
-        val targetHeightButton = 0
-
-        val menuAnimator = ValueAnimator.ofInt(initialHeightMenu, targetHeightMenu)
-        menuAnimator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            val layoutParams = binding.bottomMenu.layoutParams
-            layoutParams.height = value
-            binding.bottomMenu.layoutParams = layoutParams
+        val marginAnimator = ValueAnimator.ofInt(initialMargin, targetMargin)
+        marginAnimator.addUpdateListener { valueAnimator ->
+            val value = valueAnimator.animatedValue as Int
+            val params = binding.buttonToShowMenu.layoutParams as ConstraintLayout.LayoutParams
+            params.bottomMargin = value
+            binding.buttonToShowMenu.layoutParams = params
         }
 
-        val buttonAnimator = ValueAnimator.ofInt(initialHeightButton, targetHeightButton)
-        buttonAnimator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            val layoutParams = binding.buttonToShowMenu.layoutParams
-            layoutParams.height = value
-            binding.buttonToShowMenu.layoutParams = layoutParams
-        }
+        val height = binding.bottomMenu.height.toFloat()
+        binding.bottomMenu.animate()
+            .translationY(0f)
+            .alpha(1f)
+            .setDuration(300)
+            .start()
 
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(menuAnimator, buttonAnimator)
-        animatorSet.duration = 300
-        animatorSet.start()
+        marginAnimator.duration = 300
+        marginAnimator.start()
     }
 
     private fun hideBottomMenu() {
-        val initialHeightMenu = binding.bottomMenu.height
-        val targetHeightMenu = 0
+        val initialMargin = binding.buttonToShowMenu.marginBottom
+        val targetMargin = dpToPx(-70)
 
-        val initialHeightButton = 0
-        val targetHeightButton = dpToPx(20)
-
-        val menuAnimator = ValueAnimator.ofInt(initialHeightMenu, targetHeightMenu)
-        menuAnimator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            val layoutParams = binding.bottomMenu.layoutParams
-            layoutParams.height = value
-            binding.bottomMenu.layoutParams = layoutParams
+        val marginAnimator = ValueAnimator.ofInt(initialMargin, targetMargin)
+        marginAnimator.addUpdateListener { valueAnimator ->
+            val value = valueAnimator.animatedValue as Int
+            val params = binding.buttonToShowMenu.layoutParams as ConstraintLayout.LayoutParams
+            params.bottomMargin = value
+            binding.buttonToShowMenu.layoutParams = params
         }
 
-        val buttonAnimator = ValueAnimator.ofInt(initialHeightButton, targetHeightButton)
-        buttonAnimator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            val layoutParams = binding.buttonToShowMenu.layoutParams
-            layoutParams.height = value
-            binding.buttonToShowMenu.layoutParams = layoutParams
-        }
+        val height = binding.bottomMenu.height.toFloat()
+        binding.bottomMenu.animate()
+            .translationY(height)
+            .alpha(0f)
+            .setDuration(300)
+            .start()
 
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(menuAnimator, buttonAnimator)
-        animatorSet.duration = 300
-        animatorSet.start()
+        marginAnimator.duration = 300
+        marginAnimator.start()
     }
-
     private fun dpToPx(dp: Int): Int {
         val density = resources.displayMetrics.density
-        return (dp * density + 0.5f).toInt()
+        return (dp * density).toInt()
     }
 
     private fun buttonClick(){

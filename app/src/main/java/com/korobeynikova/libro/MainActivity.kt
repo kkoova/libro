@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(){
 
         supportActionBar?.hide()
 
+
         MobileAds.initialize(this){
             rewardedAdLoader = RewardedAdLoader(this).apply {
                 setAdLoadListener(object : RewardedAdLoadListener {
