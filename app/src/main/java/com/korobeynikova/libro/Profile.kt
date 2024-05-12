@@ -1,6 +1,7 @@
 package com.korobeynikova.libro
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,8 @@ class Profile : Fragment(), BookItemLikeClick  {
 
         val controller = findNavController()
 
+        updateVisibility()
+
         val recyclerView: RecyclerView = view.findViewById(R.id.likeRes)
         adapter = FavoriteBookAdapter(booksList, this)
         recyclerView.adapter = adapter
@@ -61,7 +64,7 @@ class Profile : Fragment(), BookItemLikeClick  {
                 val all = it.child("all").value.toString()
                 binding.textProfName.text = login
                 binding.textBook.text = all
-
+                binding.progressBar.visibility = View.GONE
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
             }
@@ -112,6 +115,7 @@ class Profile : Fragment(), BookItemLikeClick  {
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 booksList.clear()
+                updateVisibility()
                 binding.textLikeBook.text = snapshot.childrenCount.toString()
                 for (bookSnapshot in snapshot.children) {
                     val bookPath = bookSnapshot.getValue(String::class.java)
@@ -124,19 +128,13 @@ class Profile : Fragment(), BookItemLikeClick  {
                                     val book = Book(it, path)
                                     booksList.add(book)
                                     adapter.updateData(booksList)
-
-                                    if (booksList.isEmpty()) {
-                                        binding.likeNo.visibility = View.VISIBLE
-                                        binding.likeRes.visibility = View.GONE
-                                    } else {
-                                        binding.likeNo.visibility = View.GONE
-                                        binding.likeRes.visibility = View.VISIBLE
-                                    }
+                                    updateVisibility()
                                 }
-                                binding.progressBar.visibility = View.GONE
                             }
 
                             override fun onCancelled(error: DatabaseError) {
+                                binding.likeNo.visibility = View.GONE
+                                binding.likeRes.visibility = View.VISIBLE
                                 binding.progressBar.visibility = View.GONE
                             }
                         })
@@ -149,7 +147,19 @@ class Profile : Fragment(), BookItemLikeClick  {
             }
         })
     }
-
+    private fun updateVisibility() {
+        Log.d("BookListSize", "Books list size: ${booksList.size}")
+        if (booksList.size == 0) {
+            Log.d("Visibility", "Setting likeNo visibility to VISIBLE")
+            binding.likeNo.visibility = View.VISIBLE
+            binding.likeRes.visibility = View.GONE
+        } else {
+            Log.d("Visibility", "Setting likeNo visibility to GONE")
+            binding.likeNo.visibility = View.GONE
+            binding.likeRes.visibility = View.VISIBLE
+        }
+        binding.progressBar.visibility = View.GONE
+    }
     override fun onBookItemLikeClick(book: Book) {
         val bundle = Bundle()
         bundle.putString("bookPath", book.path)
