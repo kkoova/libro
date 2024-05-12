@@ -1,19 +1,22 @@
 package com.korobeynikova.libro
 
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.korobeynikova.libro.databinding.FragmentProfileBinding
 
@@ -21,8 +24,10 @@ import com.korobeynikova.libro.databinding.FragmentProfileBinding
 class Profile : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var uid: String
     private lateinit var database: DatabaseReference
+    private lateinit var adapter: FavoriteBookAdapter
+    private val booksList = mutableListOf<Book>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -37,25 +42,28 @@ class Profile : Fragment() {
 
         val controller = findNavController()
 
+        val recyclerView: RecyclerView = view.findViewById(R.id.likeRes)
+        adapter = FavoriteBookAdapter(booksList)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
         settingsBtn.setOnClickListener { controller.navigate(R.id.settingsProfile) }
         exit.setOnClickListener { controller.navigate(R.id.bookLibrary) }
 
         binding.progressBar.visibility = View.VISIBLE
 
         database = Firebase.database.reference
-        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        uid = FirebaseAuth.getInstance().currentUser!!.uid
+
         database.child("users").child(uid).get()
             .addOnSuccessListener {
                 val login = it.child("username").value.toString()
                 val all = it.child("all").value.toString()
-                val like = it.child("like").value.toString()
                 binding.textProfName.text = login
                 binding.textBook.text = all
-                binding.textLikeBook.text = like
-                binding.progressBar.visibility = View.GONE
+
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
-                binding.progressBar.visibility = View.GONE
             }
 
 
@@ -94,5 +102,52 @@ class Profile : Fragment() {
             )
             dialog.show(childFragmentManager, "MyDialogEdit")
         }
+
+        loadFavoriteBooks()
+    }
+
+    private fun loadFavoriteBooks() {
+        val userRef = database.child("users").child(uid).child("likedBooks")
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                binding.textLikeBook.text = snapshot.childrenCount.toString()
+                println(snapshot.childrenCount.toString())
+
+                if (binding.progressBar != null){
+                    binding.progressBar.visibility = View.GONE
+                }
+                for (bookSnapshot in snapshot.children) {
+                    val bookPath = bookSnapshot.getValue(String::class.java)
+                    bookPath?.let { path ->
+                        val bookRef = database.child(path)
+                        bookRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(bookSnapshot: DataSnapshot) {
+                                val title = bookSnapshot.child("title").getValue(String::class.java)
+                                title?.let {
+                                    val book = Book(it, path)
+                                    booksList.add(book)
+                                    adapter.updateData(booksList)
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                // Обработка ошибок при загрузке данных о книге
+                            }
+                        })
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Обработка ошибок при загрузке списка избранных книг
+                Toast.makeText(requireContext(), "Ошибка при загрузке избранных книг", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    private fun getBackgroundImagesArray(): IntArray {
+        return intArrayOf(R.drawable.fon_book_1, R.drawable.fon_book_3, R.drawable.fon_book_2)
     }
 }

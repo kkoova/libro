@@ -31,8 +31,8 @@
 
         <ImageView
             android:id="@+id/likeImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginEnd="24dp"
             android:src="@drawable/favorite"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -121,6 +121,7 @@
             android:layout_marginEnd="80dp"
             android:layout_marginBottom="100dp"
             android:background="@drawable/custom_button_black_btn"
+            android:backgroundTint="@color/black"
             android:text="Читать"
             android:textColor="@color/special_white"
             app:layout_constraintBottom_toBottomOf="parent"

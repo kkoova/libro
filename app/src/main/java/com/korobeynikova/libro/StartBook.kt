@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,7 +77,9 @@ class StartBook : Fragment() {
     private lateinit var bookGo: String
     private lateinit var dialog: CardTwoFragment
     private lateinit var database: DatabaseReference
-    private lateinit var stars: String
+    private lateinit var uid: String
+    private var isBookInFavorites: Boolean = false
+    private lateinit var like: ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,27 +88,115 @@ class StartBook : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fonCont.setBackgroundResource(getBackgroundImagesArray().random())
         val bookPath = arguments?.getString("bookPath")
         bookGo = bookPath.toString()
+
         settings(bookGo)
 
         val exit = view.findViewById<ImageView>(R.id.exitImage)
-        val like = view.findViewById<ImageView>(R.id.likeImage)
+        like = view.findViewById(R.id.likeImage)
         val controller = findNavController()
+
         exit.setOnClickListener { controller.navigate(R.id.bookLibrary) }
+        like.setOnClickListener { likeBook(bookGo) }
 
         dialog = CardTwoFragment()
+
+        update()
     }
 
+    private fun update(){
+        checkIfBookIsFavorite(bookGo) { isFavorite ->
+            if (isFavorite) {
+                // Если книга есть в избранном, делаем иконку активной
+                like.setImageResource(R.drawable.favorite_minus)
+            } else {
+                // Если книги нет в избранном, делаем иконку неактивной
+                like.setImageResource(R.drawable.favorite)
+            }
+        }
+    }
+
+    private fun checkIfBookIsFavorite(bookPath: String, callback: (Boolean) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let { uid ->
+            val userRef = FirebaseDatabase.getInstance().reference.child("users").child(uid)
+            userRef.child("likedBooks").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (bookSnapshot in dataSnapshot.children) {
+                        val storedBookPath = bookSnapshot.getValue(String::class.java)
+                        if (storedBookPath == bookPath) {
+                            // Книга найдена в избранном
+                            callback(true)
+                            return
+                        }
+                    }
+                    callback(false)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    callback(false)
+                }
+            })
+        } ?: run {
+            callback(false)
+        }
+    }
     private fun getBackgroundImagesArray(): IntArray {
         return intArrayOf(R.drawable.fon_book_1, R.drawable.fon_book_2, R.drawable.fon_book_3)
     }
 
+    private fun likeBook(path: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let { uid ->
+            val userRef = FirebaseDatabase.getInstance().reference.child("users").child(uid)
+
+            userRef.child("likedBooks").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (bookSnapshot in dataSnapshot.children) {
+                            val bookPath = bookSnapshot.getValue(String::class.java)
+                            if (bookPath == path) {
+                                bookSnapshot.ref.removeValue()
+                                isBookInFavorites = true
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Книга удалена из избранного",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                update()
+                                break
+                            }
+                        }
+                    }
+                    if (!isBookInFavorites) {
+                        userRef.child("likedBooks").push().setValue(path)
+                        Toast.makeText(
+                            requireContext(),
+                            "Книга добавлена в избранное",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        update()
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Ошибка при выполнении запроса",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+    }
     private fun settings(path: String) {
+
+        database = FirebaseDatabase.getInstance().reference
+        uid = FirebaseAuth.getInstance().currentUser!!.uid
 
         val databaseReference = FirebaseDatabase.getInstance().reference
 
@@ -146,9 +237,6 @@ class StartBook : Fragment() {
                     val navController = findNavController()
                     navController.navigate(R.id.readBook, bundle)
                 }, {
-                    database = FirebaseDatabase.getInstance().reference
-                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
-
                     database.child("users").child(uid).get()
                         .addOnSuccessListener { dataSnapshot ->
                             val starsValue = dataSnapshot.child("stars").value
