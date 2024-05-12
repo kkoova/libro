@@ -21,7 +21,7 @@ import com.google.firebase.database.database
 import com.korobeynikova.libro.databinding.FragmentProfileBinding
 
 
-class Profile : Fragment() {
+class Profile : Fragment(), BookItemLikeClick  {
 
     private lateinit var binding: FragmentProfileBinding
     private lateinit var uid: String
@@ -43,7 +43,7 @@ class Profile : Fragment() {
         val controller = findNavController()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.likeRes)
-        adapter = FavoriteBookAdapter(booksList)
+        adapter = FavoriteBookAdapter(booksList, this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
@@ -96,6 +96,7 @@ class Profile : Fragment() {
                         database.child("users").child(uid).child("password").setValue(email)
 
                         Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
+
                     }
                 },
                 { }
@@ -110,13 +111,8 @@ class Profile : Fragment() {
         val userRef = database.child("users").child(uid).child("likedBooks")
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                booksList.clear()
                 binding.textLikeBook.text = snapshot.childrenCount.toString()
-                println(snapshot.childrenCount.toString())
-
-                if (binding.progressBar != null){
-                    binding.progressBar.visibility = View.GONE
-                }
                 for (bookSnapshot in snapshot.children) {
                     val bookPath = bookSnapshot.getValue(String::class.java)
                     bookPath?.let { path ->
@@ -128,11 +124,20 @@ class Profile : Fragment() {
                                     val book = Book(it, path)
                                     booksList.add(book)
                                     adapter.updateData(booksList)
+
+                                    if (booksList.isEmpty()) {
+                                        binding.likeNo.visibility = View.VISIBLE
+                                        binding.likeRes.visibility = View.GONE
+                                    } else {
+                                        binding.likeNo.visibility = View.GONE
+                                        binding.likeRes.visibility = View.VISIBLE
+                                    }
                                 }
+                                binding.progressBar.visibility = View.GONE
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                // Обработка ошибок при загрузке данных о книге
+                                binding.progressBar.visibility = View.GONE
                             }
                         })
                     }
@@ -140,14 +145,16 @@ class Profile : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Обработка ошибок при загрузке списка избранных книг
                 Toast.makeText(requireContext(), "Ошибка при загрузке избранных книг", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
+    override fun onBookItemLikeClick(book: Book) {
+        val bundle = Bundle()
+        bundle.putString("bookPath", book.path)
 
-    private fun getBackgroundImagesArray(): IntArray {
-        return intArrayOf(R.drawable.fon_book_1, R.drawable.fon_book_3, R.drawable.fon_book_2)
+        val navController = findNavController()
+        navController.navigate(R.id.startBook, bundle)
     }
 }
