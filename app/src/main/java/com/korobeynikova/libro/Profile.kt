@@ -64,7 +64,6 @@ class Profile : Fragment(), BookItemLikeClick  {
                 val all = it.child("all").value.toString()
                 binding.textProfName.text = login
                 binding.textBook.text = all
-                binding.progressBar.visibility = View.GONE
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
             }
@@ -75,38 +74,41 @@ class Profile : Fragment(), BookItemLikeClick  {
             dialog.setButtons(
                 "Сохранить",
                 "Отмена",
-                { email: String, login: String ->
+                { pass: String, login: String ->
                     val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
                     val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
                     val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
-                    if (email.isEmpty() || login.isEmpty()) {
-                        Toast.makeText(requireContext(), "Заполните поля", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val user = firebaseAuth.currentUser
-                        user?.updatePassword(email)
-                            ?.addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    if (pass.isNotEmpty() || login.isNotEmpty()){
+                        if (pass.isNotEmpty()) {
+                            val user = firebaseAuth.currentUser
+                            user?.updatePassword(pass)
+                                ?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                    dialog.dismiss()
                                 }
-                                dialog.dismiss()
-                            }
 
-                        database.child("users").child(uid).child("username").setValue(login)
-                        database.child("users").child(uid).child("password").setValue(email)
+                            database.child("users").child(uid).child("password").setValue(pass)
 
-                        Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
 
-                    }
+                        }
+
+                        if (login.isNotEmpty()) {
+                            database.child("users").child(uid).child("username").setValue(login)
+                            Toast.makeText(requireContext(), "Данные логина успешно сохранены", Toast.LENGTH_SHORT).show()
+                        }
+                    } else { Toast.makeText(requireContext(), "Поля пустые", Toast.LENGTH_SHORT).show() }
                 },
                 { }
             )
             dialog.show(childFragmentManager, "MyDialogEdit")
         }
-
         loadFavoriteBooks()
     }
 
@@ -133,9 +135,7 @@ class Profile : Fragment(), BookItemLikeClick  {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                binding.likeNo.visibility = View.GONE
-                                binding.likeRes.visibility = View.VISIBLE
-                                binding.progressBar.visibility = View.GONE
+                                updateVisibility()
                             }
                         })
                     }
@@ -158,7 +158,9 @@ class Profile : Fragment(), BookItemLikeClick  {
             binding.likeNo.visibility = View.GONE
             binding.likeRes.visibility = View.VISIBLE
         }
-        binding.progressBar.visibility = View.GONE
+        binding.progressBar.postDelayed({
+            binding.progressBar.visibility = View.GONE
+        }, 500)
     }
     override fun onBookItemLikeClick(book: Book) {
         val bundle = Bundle()

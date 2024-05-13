@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -56,7 +57,7 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         buttonClick()
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {}
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {requireActivity().finish()}
 
         setupRecyclerView()
 
@@ -137,7 +138,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
         marginAnimator.start()
         binding.buttonToShowMenu.visibility = View.INVISIBLE
     }
-
     private fun hideBottomMenu() {
         val initialMargin = binding.buttonToShowMenu.marginBottom
         val targetMargin = dpToPx(-70)
@@ -199,28 +199,28 @@ class BookLibrary : Fragment(), BookItemClickListener {
         val color = ContextCompat.getColor(requireContext(), R.color.white)
         binding.bookBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
-        binding.helpBtn.setOnClickListener {  }
-        binding.setingsBtn.setOnClickListener {  }
-        binding.profileBtn.setOnClickListener { container.navigate(R.id.profile) }
+        val scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.button_animation)
+
+        binding.helpBtn.setOnClickListener { binding.helpBtn.startAnimation(scaleAnimation) }
+        binding.setingsBtn.setOnClickListener {
+            binding.setingsBtn.startAnimation(scaleAnimation)
+            binding.setingsBtn.postDelayed({
+                container.navigate(R.id.settingsProfile)
+            }, 200)
+        }
+        binding.profileBtn.setOnClickListener {
+            binding.profileBtn.startAnimation(scaleAnimation)
+            binding.profileBtn.postDelayed({
+                container.navigate(R.id.profile)
+            }, 200)
+        }
         binding.logUotBtn.setOnClickListener {
-            val dialog = MyDialogFragment()
-            dialog.setButtons(
-                "Выйти",
-                "Отмена",
-                "Подтверждение выхода",
-                "Вы точно хотите выйти из аккаунта?",
-                {
-                    firebaseAuth.signOut()
-                    Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
-                        .show()
-                    val intent = Intent(context, MainLog::class.java)
-                    startActivity(intent)
-                    MainActivity().finish()
-                }, { })
-            dialog.show(childFragmentManager, "MyDialogFragment")
+            binding.logUotBtn.startAnimation(scaleAnimation)
+            binding.logUotBtn.postDelayed({
+                exitProfile()
+            }, 200)
         }
     }
-
     private fun setupRecyclerView() {
         val query = FirebaseDatabase.getInstance().reference.child("books").child(bookKlass)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -257,7 +257,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
             }
         })
     }
-
     override fun onBookItemClick(book: Book) {
         val bundle = Bundle()
         bundle.putString("bookPath", book.path)
@@ -265,11 +264,26 @@ class BookLibrary : Fragment(), BookItemClickListener {
         val navController = findNavController()
         navController.navigate(R.id.startBook, bundle)
     }
-
     private fun getBackgroundImagesArray(): IntArray {
         return intArrayOf(R.drawable.fon_1, R.drawable.fon_2, R.drawable.fon_3, R.drawable.fon_4,
             R.drawable.fon_5, R.drawable.fon_6, R.drawable.fon_7, R.drawable.fon_8, R.drawable.fon_9,
             R.drawable.fon_10)
     }
-
+    private fun exitProfile(){
+        val dialog = MyDialogFragment()
+        dialog.setButtons(
+            "Выйти",
+            "Отмена",
+            "Подтверждение выхода",
+            "Вы точно хотите выйти из аккаунта?",
+            {
+                firebaseAuth.signOut()
+                Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
+                    .show()
+                val intent = Intent(context, MainLog::class.java)
+                startActivity(intent)
+                MainActivity().finish()
+            }, { })
+        dialog.show(childFragmentManager, "MyDialogFragment")
+    }
 }

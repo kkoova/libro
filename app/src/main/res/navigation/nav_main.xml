@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_bookLibrary_to_startBook"
             app:destination="@id/startBook" />
+        <action
+            android:id="@+id/action_bookLibrary_to_settingsProfile"
+            app:destination="@id/settingsProfile" />
     </fragment>
     <fragment
         android:id="@+id/profile"

@@ -53,6 +53,8 @@ class SettingsProfile : Fragment() {
 
 
         val delliteProfile = view.findViewById<ConstraintLayout>(R.id.delliteLayout)
+        val exitProfile = view.findViewById<ConstraintLayout>(R.id.exitLayout)
+
         val exit = view.findViewById<ImageView>(R.id.exitImage)
 
         val controller = findNavController()
@@ -94,6 +96,24 @@ class SettingsProfile : Fragment() {
 
                 }
             )
+            dialog.show(childFragmentManager, "MyDialogFragment")
+        }
+
+        exitProfile.setOnClickListener {
+            val dialog = MyDialogFragment()
+            dialog.setButtons(
+                "Выйти",
+                "Отмена",
+                "Подтверждение выхода",
+                "Вы точно хотите выйти из аккаунта?",
+                {
+                    firebaseAuth.signOut()
+                    Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
+                        .show()
+                    val intent = Intent(context, MainLog::class.java)
+                    startActivity(intent)
+                    MainActivity().finish()
+                }, { })
             dialog.show(childFragmentManager, "MyDialogFragment")
         }
     }
