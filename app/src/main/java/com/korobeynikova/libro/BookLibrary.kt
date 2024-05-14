@@ -220,6 +220,9 @@ class BookLibrary : Fragment(), BookItemClickListener {
                 exitProfile()
             }, 200)
         }
+        binding.searchBtn.setOnClickListener {
+
+        }
     }
     private fun setupRecyclerView() {
         val query = FirebaseDatabase.getInstance().reference.child("books").child(bookKlass)
