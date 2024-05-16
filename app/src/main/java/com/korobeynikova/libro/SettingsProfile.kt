@@ -1,36 +1,19 @@
 package com.korobeynikova.libro
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
-import com.yandex.mobile.ads.common.AdError
-import com.yandex.mobile.ads.common.AdRequestConfiguration
-import com.yandex.mobile.ads.common.AdRequestError
-import com.yandex.mobile.ads.common.ImpressionData
-import com.yandex.mobile.ads.common.MobileAds
-import com.yandex.mobile.ads.rewarded.Reward
-import com.yandex.mobile.ads.rewarded.RewardedAd
-import com.yandex.mobile.ads.rewarded.RewardedAdEventListener
-import com.yandex.mobile.ads.rewarded.RewardedAdLoadListener
-import com.yandex.mobile.ads.rewarded.RewardedAdLoader
 
 class SettingsProfile : Fragment() {
 
@@ -52,7 +35,7 @@ class SettingsProfile : Fragment() {
         database = FirebaseDatabase.getInstance().reference
 
 
-        val delliteProfile = view.findViewById<ConstraintLayout>(R.id.delliteLayout)
+        val delliteProfile = view.findViewById<ConstraintLayout>(R.id.editLayout)
         val exitProfile = view.findViewById<ConstraintLayout>(R.id.exitLayout)
 
         val exit = view.findViewById<ImageView>(R.id.exitImage)
