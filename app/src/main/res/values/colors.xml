@@ -10,4 +10,6 @@
 
     <color name="special_grey">#CCBEB6</color>
     <color name="red">#8D3440</color>
+    <color name="yellow">#FBDDC3</color>
+    <color name="pink">#FDB9C0</color>
 </resources>

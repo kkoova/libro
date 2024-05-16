@@ -192,6 +192,17 @@ class BookLibrary : Fragment(), BookItemClickListener {
             MainActivity().finish()
         }
 
+        binding.searchView.setOnClickListener {
+            val dialog = DialogSearch()
+            dialog.setButtons(
+                {
+
+                }, {
+
+                })
+            dialog.show(childFragmentManager, "MyDialogSearch")
+        }
+
         binding.buttonToShowMenu.setOnClickListener {
             showBottomMenu()
         }
