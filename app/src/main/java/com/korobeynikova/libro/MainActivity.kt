@@ -2,6 +2,7 @@ package com.korobeynikova.libro
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity(){
 
     private var rewardedAd: RewardedAd? = null
     private var rewardedAdLoader: RewardedAdLoader? = null
+    private lateinit var starsCountTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity(){
                     }
                 })
             }
+            starsCountTextView = findViewById(R.id.starsCount)
             loadRewAd()
         }
 
@@ -114,7 +117,7 @@ class MainActivity : AppCompatActivity(){
                             val stars = starsValue.toString().toInt()
                             val newStars = (stars + 15).toString()
                             database.child("users").child(uid).child("stars").setValue(newStars)
-
+                            updateStarsCount(newStars.toInt())
                         }
                         .addOnCanceledListener {}
                 }
@@ -134,5 +137,11 @@ class MainActivity : AppCompatActivity(){
     private fun destroyRewAd(){
         rewardedAd?.setAdEventListener(null)
         rewardedAd = null
+    }
+
+    fun updateStarsCount(stars: Int) {
+        runOnUiThread {
+            starsCountTextView.text = "$stars"
+        }
     }
 }

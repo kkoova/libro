@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,6 +22,9 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
     private lateinit var autoCompleteTitle: AutoCompleteTextView
     private lateinit var autoCompleteAuthor: AutoCompleteTextView
     private lateinit var database: DatabaseReference
+
+    private val titlesList = mutableListOf<String>()
+    private val authorsList = mutableListOf<String>()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -41,8 +45,7 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
 
         database = FirebaseDatabase.getInstance().reference
 
-        setupAutoCompleteTextView(autoCompleteTitle, "title")
-        setupAutoCompleteTextView(autoCompleteAuthor, "author")
+        setupAutoCompleteTextView()
 
         val searchButton = view.findViewById<Button>(R.id.buttonSearch)
         searchButton.setOnClickListener {
@@ -66,30 +69,43 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
         return view
     }
 
-    private fun setupAutoCompleteTextView(autoCompleteTextView: AutoCompleteTextView, field: String) {
-        val suggestions = mutableListOf<String>()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, suggestions)
-        autoCompleteTextView.setAdapter(adapter)
+    private fun setupAutoCompleteTextView() {
+        val titleAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, titlesList)
+        autoCompleteTitle.setAdapter(titleAdapter)
+
+        val authorAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, authorsList)
+        autoCompleteAuthor.setAdapter(authorAdapter)
 
         database.child("books").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                suggestions.clear()
+                titlesList.clear()
+                authorsList.clear()
                 for (bookSnapshot in snapshot.children) {
-                    val suggestion = bookSnapshot.child(field).getValue(String::class.java)
-                    suggestion?.let {
-                        if (!suggestions.contains(it)) {
-                            suggestions.add(it)
+                    for (classSnapshot in bookSnapshot.children) {
+                        val title = classSnapshot.child("title").getValue(String::class.java)
+                        val author = classSnapshot.child("author").getValue(String::class.java)
+                        title?.let {
+                            if (!titlesList.contains(it)) {
+                                titlesList.add(it)
+                            }
+                        }
+                        author?.let {
+                            if (!authorsList.contains(it)) {
+                                authorsList.add(it)
+                            }
                         }
                     }
                 }
-                adapter.notifyDataSetChanged()
+                titleAdapter.notifyDataSetChanged()
+                authorAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Обработка ошибок
+                Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
             }
         })
 
-        autoCompleteTextView.threshold = 2 // Показывать предложения после ввода одного символа
+        autoCompleteTitle.threshold = 1 // Показывать предложения после ввода одного символа
+        autoCompleteAuthor.threshold = 1 // Показывать предложения после ввода одного символа
     }
 }
