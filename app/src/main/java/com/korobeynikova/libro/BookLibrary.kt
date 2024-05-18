@@ -234,43 +234,78 @@ class BookLibrary : Fragment(), BookItemClickListener {
         }
         dialog.show(childFragmentManager, "SearchBooksDialog")
     }
-
+    private fun updateRecyclerView(bookList: List<Book>) {
+        val backgroundImagesArray = getBackgroundImagesArray()
+        val bookAdapter = BookAdapter(bookList, backgroundImagesArray, this@BookLibrary)
+        binding.recyclerViewBooks.adapter = bookAdapter
+        binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
+    }
     private fun performSearch(title: String?, author: String?, classes: List<String>) {
         val query = FirebaseDatabase.getInstance().reference.child("books")
-        val booksQuery = query.orderByChild("title").startAt(title).endAt(title + "\uf8ff")
+        val bookList = mutableListOf<Book>()
 
-        booksQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                booksList.clear()
-                if (binding.progressBar != null) {
-                    binding.progressBar.visibility = View.GONE
-                }
-                for (snapshot in dataSnapshot.children) {
-                    val bookTitle = snapshot.child("title").getValue(String::class.java)
-                    val bookAuthor = snapshot.child("author").getValue(String::class.java)
-                    val bookClass = snapshot.child("class").getValue(String::class.java)
-
-                    if (bookTitle != null && bookAuthor != null && bookClass != null) {
-                        if ((title == null || bookTitle.contains(title, true)) &&
-                            (author == null || bookAuthor.contains(author, true)) &&
-                            (classes.isEmpty() || classes.contains(bookClass))
-                        ) {
-                            val path = "books/" + snapshot.ref.parent!!.key + "/" + snapshot.key
-                            val book = Book(bookTitle, path)
-                            booksList.add(book)
+        if (!title.isNullOrEmpty()) {
+            for (className in classes) {
+                query.child(className).orderByChild("title").equalTo(title).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (snapshot in dataSnapshot.children) {
+                            val bookTitle = snapshot.child("title").getValue(String::class.java)
+                            bookTitle?.let {
+                                val path = "books/$className/${snapshot.key}"
+                                val book = Book(it, path)
+                                bookList.add(book)
+                            }
                         }
+                        updateRecyclerView(bookList)
                     }
-                }
-                val backgroundImagesArray = getBackgroundImagesArray()
-                val bookAdapter = BookAdapter(booksList, backgroundImagesArray, this@BookLibrary)
-                binding.recyclerViewBooks.adapter = bookAdapter
-                binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
-        })
+        } else if (!author.isNullOrEmpty()) {
+            for (className in classes) {
+                query.child(className).orderByChild("author").equalTo(author).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (snapshot in dataSnapshot.children) {
+                            val bookTitle = snapshot.child("title").getValue(String::class.java)
+                            bookTitle?.let {
+                                val path = "books/$className/${snapshot.key}"
+                                val book = Book(it, path)
+                                bookList.add(book)
+                            }
+                        }
+                        updateRecyclerView(bookList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        } else {
+            // Выполните поиск по всем книгам выбранных классов, если title и author пустые
+            for (className in classes) {
+                query.child(className).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (snapshot in dataSnapshot.children) {
+                            val bookTitle = snapshot.child("title").getValue(String::class.java)
+                            bookTitle?.let {
+                                val path = "books/$className/${snapshot.key}"
+                                val book = Book(it, path)
+                                bookList.add(book)
+                            }
+                        }
+                        updateRecyclerView(bookList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        }
     }
     private fun setupRecyclerView() {
         val query = FirebaseDatabase.getInstance().reference.child("books").child(bookKlass)

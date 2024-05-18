@@ -90,6 +90,6 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
             }
         })
 
-        autoCompleteTextView.threshold = 1 // Показывать предложения после ввода одного символа
+        autoCompleteTextView.threshold = 2 // Показывать предложения после ввода одного символа
     }
 }
