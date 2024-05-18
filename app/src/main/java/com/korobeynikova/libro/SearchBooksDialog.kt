@@ -70,10 +70,10 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
     }
 
     private fun setupAutoCompleteTextView() {
-        val titleAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, titlesList)
+        val titleAdapter = ArrayAdapter(requireContext(), R.layout.custom_dropdown_item, R.id.textViewItem, titlesList)
         autoCompleteTitle.setAdapter(titleAdapter)
 
-        val authorAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, authorsList)
+        val authorAdapter = ArrayAdapter(requireContext(), R.layout.custom_dropdown_item, R.id.textViewItem, authorsList)
         autoCompleteAuthor.setAdapter(authorAdapter)
 
         database.child("books").addValueEventListener(object : ValueEventListener {
@@ -105,7 +105,7 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
             }
         })
 
-        autoCompleteTitle.threshold = 1 // Показывать предложения после ввода одного символа
-        autoCompleteAuthor.threshold = 1 // Показывать предложения после ввода одного символа
+        autoCompleteTitle.threshold = 1
+        autoCompleteAuthor.threshold = 1
     }
 }
