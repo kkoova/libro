@@ -35,8 +35,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mainText5" />
 
-    <EditText
-        android:id="@+id/editTextText"
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTitle"
         style="@style/editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -44,8 +44,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/custom_edit_null"
-        android:ems="10"
-        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noMainText4" />
@@ -61,10 +59,10 @@
         android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTitle" />
 
-    <EditText
-        android:id="@+id/editTextText2"
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteAuthor"
         style="@style/editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,14 +70,12 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/custom_edit_null"
-        android:ems="10"
-        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noMainText5" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/class11CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -88,10 +84,10 @@
         android:foregroundTint="#FF0000"
         android:text="11 класс"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteAuthor" />
 
     <CheckBox
-        android:id="@+id/checkBox4"
+        android:id="@+id/class8CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -99,10 +95,10 @@
         android:foregroundTint="#FF0000"
         android:text="8 класс"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
+        app:layout_constraintTop_toBottomOf="@+id/class9CheckBox" />
 
     <CheckBox
-        android:id="@+id/checkBox3"
+        android:id="@+id/class9CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -110,10 +106,10 @@
         android:foregroundTint="#FF0000"
         android:text="9 класс"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+        app:layout_constraintTop_toBottomOf="@+id/class10CheckBox" />
 
     <CheckBox
-        android:id="@+id/checkBox5"
+        android:id="@+id/class7CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -122,10 +118,10 @@
         android:foregroundTint="#FF0000"
         android:text="7 класс"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteAuthor" />
 
     <CheckBox
-        android:id="@+id/checkBox6"
+        android:id="@+id/class6CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -133,10 +129,10 @@
         android:foregroundTint="#FF0000"
         android:text="6 класс"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox5" />
+        app:layout_constraintTop_toBottomOf="@+id/class7CheckBox" />
 
     <CheckBox
-        android:id="@+id/checkBox7"
+        android:id="@+id/class5CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -144,10 +140,10 @@
         android:foregroundTint="#FF0000"
         android:text="5 класс"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox6" />
+        app:layout_constraintTop_toBottomOf="@+id/class6CheckBox" />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/class10CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -155,10 +151,10 @@
         android:foregroundTint="#FF0000"
         android:text="10 класс"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+        app:layout_constraintTop_toBottomOf="@+id/class11CheckBox" />
 
     <Button
-        android:id="@+id/goSearch"
+        android:id="@+id/buttonSearch"
         style="@style/blackBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -175,7 +171,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/noSeach"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
+        app:layout_constraintTop_toBottomOf="@+id/class8CheckBox" />
 
     <Button
         android:id="@+id/noSeach"
@@ -193,7 +189,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/goSearch"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSearch"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
+        app:layout_constraintTop_toBottomOf="@+id/class8CheckBox" />
 </androidx.constraintlayout.widget.ConstraintLayout>
