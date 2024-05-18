@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -195,7 +196,10 @@ class BookLibrary : Fragment(), BookItemClickListener {
         }
 
         binding.searchView.setOnClickListener {
-            openSearchDialog()
+            val dialog = SearchBooksDialog { title, author, classes ->
+                performSearch(title, author, classes)
+            }
+            dialog.show(childFragmentManager, "SearchBooksDialog")
         }
 
         binding.buttonToShowMenu.setOnClickListener {
@@ -228,97 +232,23 @@ class BookLibrary : Fragment(), BookItemClickListener {
         }
     }
 
-    private fun openSearchDialog() {
-        val dialog = SearchBooksDialog { title, author, classes ->
-            performSearch(title, author, classes)
-        }
-        dialog.show(childFragmentManager, "SearchBooksDialog")
-    }
-    private fun updateRecyclerView(bookList: List<Book>) {
-        val backgroundImagesArray = getBackgroundImagesArray()
-        val bookAdapter = BookAdapter(bookList, backgroundImagesArray, this@BookLibrary)
-        binding.recyclerViewBooks.adapter = bookAdapter
-        binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
-    }
     private fun performSearch(title: String?, author: String?, classes: List<String>) {
+        Log.d("help", "${title} ${author} ${classes}")
         val query = FirebaseDatabase.getInstance().reference.child("books")
         val bookList = mutableListOf<Book>()
-        var titleSearchCompleted = false
-        var authorSearchCompleted = false
 
+        // Поиск по названию
         if (!title.isNullOrEmpty()) {
-            for (className in classes) {
-                query.child(className).orderByChild("title").equalTo(title).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (snapshot in dataSnapshot.children) {
-                            val bookTitle = snapshot.child("title").getValue(String::class.java)
-                            bookTitle?.let {
-                                val path = "books/$className/${snapshot.key}"
-                                val book = Book(it, path)
-                                bookList.add(book)
-                            }
-                        }
-                        titleSearchCompleted = true
-                        if (titleSearchCompleted && authorSearchCompleted) {
-                            updateRecyclerView(bookList)
-                        }
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
-                        titleSearchCompleted = true
-                        if (titleSearchCompleted && authorSearchCompleted) {
-                            updateRecyclerView(bookList)
-                        }
-                    }
-                })
-            }
-        } else {
-            titleSearchCompleted = true
-        }
-
-        if (!author.isNullOrEmpty()) {
-            for (className in classes) {
-                query.child(className).orderByChild("author").equalTo(author).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (snapshot in dataSnapshot.children) {
-                            val bookTitle = snapshot.child("title").getValue(String::class.java)
-                            bookTitle?.let {
-                                val path = "books/$className/${snapshot.key}"
-                                val book = Book(it, path)
-                                if (!bookList.contains(book)) {
-                                    bookList.add(book)
-                                }
-                            }
-                        }
-                        authorSearchCompleted = true
-                        if (titleSearchCompleted && authorSearchCompleted) {
-                            updateRecyclerView(bookList)
-                        }
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
-                        authorSearchCompleted = true
-                        if (titleSearchCompleted && authorSearchCompleted) {
-                            updateRecyclerView(bookList)
-                        }
-                    }
-                })
-            }
-        } else {
-            authorSearchCompleted = true
-        }
-
-        if (title.isNullOrEmpty() && author.isNullOrEmpty()) {
             for (className in classes) {
                 query.child(className).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         for (snapshot in dataSnapshot.children) {
                             val bookTitle = snapshot.child("title").getValue(String::class.java)
-                            bookTitle?.let {
+                            Log.d("help", "${title} ${bookTitle}")
+                            if (bookTitle == title){
                                 val path = "books/$className/${snapshot.key}"
-                                val book = Book(it, path)
+                                Log.d("help", "${path}")
+                                val book = Book(bookTitle, path)
                                 bookList.add(book)
                             }
                         }
@@ -327,11 +257,47 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
                     override fun onCancelled(databaseError: DatabaseError) {
                         Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                        updateRecyclerView(bookList)
+                    }
+                })
+            }
+        }
+        // Поиск по автору
+        if (!author.isNullOrEmpty()) {
+            for (className in classes) {
+                query.child(className).orderByChild("author").equalTo(author).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (snapshot in dataSnapshot.children) {
+                            val bookTitle = snapshot.child("author").getValue(String::class.java)
+                            bookTitle?.let {
+                                val path = "books/$className/${snapshot.key}"
+                                val book = Book(it, path)
+                                if (!bookList.contains(book)) {
+                                    bookList.add(book)
+                                }
+                            }
+                        }
+                        updateRecyclerView(bookList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                        updateRecyclerView(bookList)
                     }
                 })
             }
         }
     }
+
+    private fun updateRecyclerView(bookList: List<Book>) {
+        Log.d("SearchBooksDialog", "Updating RecyclerView with ${bookList.size} books")
+
+        val backgroundImagesArray = getBackgroundImagesArray()
+        val bookAdapter = BookAdapter(bookList, backgroundImagesArray, this@BookLibrary)
+        binding.recyclerViewBooks.adapter = bookAdapter
+        binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
+    }
+
     private fun setupRecyclerView() {
         val query = FirebaseDatabase.getInstance().reference.child("books").child(bookKlass)
         query.addListenerForSingleValueEvent(object : ValueEventListener {

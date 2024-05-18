@@ -1,6 +1,9 @@
 package com.korobeynikova.libro
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -107,5 +110,11 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
 
         autoCompleteTitle.threshold = 1
         autoCompleteAuthor.threshold = 1
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return dialog
     }
 }
