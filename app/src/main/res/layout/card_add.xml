@@ -24,150 +24,137 @@
 
     <TextView
         android:id="@+id/noMainText4"
-        android:layout_width="0dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
         android:fontFamily="@font/reseva"
         android:text="Название книги:"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mainText5" />
 
-    <EditText
-        android:id="@+id/editTextText"
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTitle"
+        style="@style/editText"
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/div_gallery_item_border"
-        android:backgroundTint="@color/black"
-        android:ems="10"
-        android:inputType="text"
+        android:background="@drawable/custom_edit_null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noMainText4" />
 
     <TextView
         android:id="@+id/noMainText5"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/reseva"
+        android:text="Автор:"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTitle" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteAuthor"
+        style="@style/editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/reseva"
-        android:text="Название книги:"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
-
-    <EditText
-        android:id="@+id/editTextText2"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/div_gallery_item_border"
-        android:backgroundTint="@color/black"
-        android:ems="10"
-        android:inputType="text"
+        android:background="@drawable/custom_edit_null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noMainText5" />
 
-    <TextView
-        android:id="@+id/noMainText6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/reseva"
-        android:text="Класс:"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
-
     <CheckBox
-        android:id="@+id/checkeleven"
+        android:id="@+id/class11CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
         android:text="11 класс"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noMainText6" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteAuthor" />
 
     <CheckBox
-        android:id="@+id/checkeleven2"
+        android:id="@+id/class8CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:fontFamily="@font/rostov"
-        android:text="10 класс"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven" />
-
-    <CheckBox
-        android:id="@+id/checkeleven3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/rostov"
-        android:text="9 класс"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven2" />
-
-    <CheckBox
-        android:id="@+id/checkeleven4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
         android:text="8 класс"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven3" />
+        app:layout_constraintTop_toBottomOf="@+id/class9CheckBox" />
 
     <CheckBox
-        android:id="@+id/checkeleven5"
+        android:id="@+id/class9CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
         android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
+        android:text="9 класс"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/class10CheckBox" />
+
+    <CheckBox
+        android:id="@+id/class7CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
         android:text="7 класс"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noMainText6" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteAuthor" />
 
     <CheckBox
-        android:id="@+id/checkeleven6"
+        android:id="@+id/class6CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
         android:text="6 класс"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven5" />
+        app:layout_constraintTop_toBottomOf="@+id/class7CheckBox" />
 
     <CheckBox
-        android:id="@+id/checkeleven7"
+        android:id="@+id/class5CheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
         android:text="5 класс"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven6" />
+        app:layout_constraintTop_toBottomOf="@+id/class6CheckBox" />
+
+    <CheckBox
+        android:id="@+id/class10CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="@font/rostov"
+        android:foregroundTint="#FF0000"
+        android:text="10 класс"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/class11CheckBox" />
 
     <Button
-        android:id="@+id/yesBtn3"
+        android:id="@+id/buttonSearch"
         style="@style/blackBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -175,7 +162,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/custom_button_black_btn"
+        android:background="@drawable/gradient"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:text="Поиск"
@@ -183,11 +170,11 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/noBtn3"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven4" />
+        app:layout_constraintStart_toEndOf="@+id/noSeach"
+        app:layout_constraintTop_toBottomOf="@+id/class8CheckBox" />
 
     <Button
-        android:id="@+id/noBtn3"
+        android:id="@+id/noSeach"
         style="@style/blackBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -202,7 +189,7 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/yesBtn3"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSearch"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkeleven4" />
+        app:layout_constraintTop_toBottomOf="@+id/class8CheckBox" />
 </androidx.constraintlayout.widget.ConstraintLayout>

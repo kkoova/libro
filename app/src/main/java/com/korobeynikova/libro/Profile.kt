@@ -38,7 +38,6 @@ class Profile : Fragment(), BookItemLikeClick  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val settingsBtn = view.findViewById<ImageView>(R.id.settingsBtn)
         val exit = view.findViewById<ImageView>(R.id.exitImage)
 
         val controller = findNavController()
@@ -50,7 +49,6 @@ class Profile : Fragment(), BookItemLikeClick  {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        settingsBtn.setOnClickListener { controller.navigate(R.id.settingsProfile) }
         exit.setOnClickListener { controller.navigate(R.id.bookLibrary) }
 
         binding.progressBar.visibility = View.VISIBLE
@@ -68,47 +66,6 @@ class Profile : Fragment(), BookItemLikeClick  {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
             }
 
-
-        binding.settingsBtn.setOnClickListener {
-            val dialog = MyDialogEdit()
-            dialog.setButtons(
-                "Сохранить",
-                "Отмена",
-                { pass: String, login: String ->
-                    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-                    val database: DatabaseReference = FirebaseDatabase.getInstance().reference
-
-                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
-
-                    if (pass.isNotEmpty() || login.isNotEmpty()){
-                        if (pass.isNotEmpty()) {
-                            val user = firebaseAuth.currentUser
-                            user?.updatePassword(pass)
-                                ?.addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                                    dialog.dismiss()
-                                }
-
-                            database.child("users").child(uid).child("password").setValue(pass)
-
-                            Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
-
-                        }
-
-                        if (login.isNotEmpty()) {
-                            database.child("users").child(uid).child("username").setValue(login)
-                            Toast.makeText(requireContext(), "Данные логина успешно сохранены", Toast.LENGTH_SHORT).show()
-                        }
-                    } else { Toast.makeText(requireContext(), "Поля пустые", Toast.LENGTH_SHORT).show() }
-                },
-                { }
-            )
-            dialog.show(childFragmentManager, "MyDialogEdit")
-        }
         loadFavoriteBooks()
     }
 

@@ -1,36 +1,19 @@
 package com.korobeynikova.libro
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
-import com.yandex.mobile.ads.common.AdError
-import com.yandex.mobile.ads.common.AdRequestConfiguration
-import com.yandex.mobile.ads.common.AdRequestError
-import com.yandex.mobile.ads.common.ImpressionData
-import com.yandex.mobile.ads.common.MobileAds
-import com.yandex.mobile.ads.rewarded.Reward
-import com.yandex.mobile.ads.rewarded.RewardedAd
-import com.yandex.mobile.ads.rewarded.RewardedAdEventListener
-import com.yandex.mobile.ads.rewarded.RewardedAdLoadListener
-import com.yandex.mobile.ads.rewarded.RewardedAdLoader
 
 class SettingsProfile : Fragment() {
 
@@ -52,16 +35,58 @@ class SettingsProfile : Fragment() {
         database = FirebaseDatabase.getInstance().reference
 
 
-        val delliteProfile = view.findViewById<ConstraintLayout>(R.id.delliteLayout)
+        val deleteProfile = view.findViewById<ConstraintLayout>(R.id.deleteLayout)
         val exitProfile = view.findViewById<ConstraintLayout>(R.id.exitLayout)
+        val editProfile = view.findViewById<ConstraintLayout>(R.id.editLayout)
 
         val exit = view.findViewById<ImageView>(R.id.exitImage)
 
         val controller = findNavController()
 
-        exit.setOnClickListener { controller.navigate(R.id.profile) }
+        editProfile.setOnClickListener {
+            val dialog = MyDialogEdit()
+            dialog.setButtons(
+                "Сохранить",
+                "Отмена",
+                { pass: String, login: String ->
+                    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                    val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
-        delliteProfile.setOnClickListener {
+                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+                    if (pass.isNotEmpty() || login.isNotEmpty()){
+                        if (pass.isNotEmpty()) {
+                            val user = firebaseAuth.currentUser
+                            user?.updatePassword(pass)
+                                ?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                    dialog.dismiss()
+                                }
+
+                            database.child("users").child(uid).child("password").setValue(pass)
+
+                            Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
+
+                        }
+
+                        if (login.isNotEmpty()) {
+                            database.child("users").child(uid).child("username").setValue(login)
+                            Toast.makeText(requireContext(), "Данные логина успешно сохранены", Toast.LENGTH_SHORT).show()
+                        }
+                    } else { Toast.makeText(requireContext(), "Поля пустые", Toast.LENGTH_SHORT).show() }
+                },
+                { }
+            )
+            dialog.show(childFragmentManager, "MyDialogEdit")
+        }
+
+        exit.setOnClickListener { controller.navigate(R.id.bookLibrary) }
+
+        deleteProfile.setOnClickListener {
             val dialog = MyDialogFragment()
             dialog.setButtons(
                 "Удалить",
