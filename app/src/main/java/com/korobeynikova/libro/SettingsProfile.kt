@@ -123,23 +123,28 @@ class SettingsProfile : Fragment() {
             )
             dialog.show(childFragmentManager, "MyDialogFragment")
         }
-
         exitProfile.setOnClickListener {
-            val dialog = MyDialogFragment()
-            dialog.setButtons(
-                "Выйти",
-                "Отмена",
-                "Подтверждение выхода",
-                "Вы точно хотите выйти из аккаунта?",
-                {
-                    firebaseAuth.signOut()
-                    Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
-                        .show()
-                    val intent = Intent(context, MainLog::class.java)
-                    startActivity(intent)
-                    MainActivity().finish()
-                }, { })
-            dialog.show(childFragmentManager, "MyDialogFragment")
+            exitProfileFun()
         }
+        binding.menuBtn.setOnClickListener {
+            (activity as? MainActivity)?.openDrawer()
+        }
+    }
+    fun exitProfileFun(){
+        val dialog = MyDialogFragment()
+        dialog.setButtons(
+            "Выйти",
+            "Отмена",
+            "Подтверждение выхода",
+            "Вы точно хотите выйти из аккаунта?",
+            {
+                firebaseAuth.signOut()
+                Toast.makeText(requireContext(), "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
+                    .show()
+                val intent = Intent(context, MainLog::class.java)
+                startActivity(intent)
+                MainActivity().finish()
+            }, { })
+        dialog.show(childFragmentManager, "MyDialogFragment")
     }
 }

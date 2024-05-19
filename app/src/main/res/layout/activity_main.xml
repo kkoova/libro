@@ -25,11 +25,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/top_menu"
+        app:headerLayout="@layout/heder_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/left_menu" />
+        app:menu="@menu/left_menu"/>
 
 
 

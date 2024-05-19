@@ -56,6 +56,10 @@ class Profile : Fragment(), BookItemLikeClick  {
         database = Firebase.database.reference
         uid = FirebaseAuth.getInstance().currentUser!!.uid
 
+        binding.menuBtn.setOnClickListener {
+            (activity as? MainActivity)?.openDrawer()
+        }
+
         database.child("users").child(uid).get()
             .addOnSuccessListener {
                 val login = it.child("username").value.toString()
@@ -105,13 +109,10 @@ class Profile : Fragment(), BookItemLikeClick  {
         })
     }
     private fun updateVisibility() {
-        Log.d("BookListSize", "Books list size: ${booksList.size}")
         if (booksList.size == 0) {
-            Log.d("Visibility", "Setting likeNo visibility to VISIBLE")
             binding.likeNo.visibility = View.VISIBLE
             binding.likeRes.visibility = View.GONE
         } else {
-            Log.d("Visibility", "Setting likeNo visibility to GONE")
             binding.likeNo.visibility = View.GONE
             binding.likeRes.visibility = View.VISIBLE
         }

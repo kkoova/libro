@@ -1,5 +1,7 @@
 package com.korobeynikova.libro
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -8,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -16,6 +20,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.korobeynikova.libro.databinding.FragmentProfileBinding
+import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
 import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequestConfiguration
 import com.yandex.mobile.ads.common.AdRequestError
@@ -33,6 +39,7 @@ class MainActivity : AppCompatActivity(){
     private var rewardedAdLoader: RewardedAdLoader? = null
     private lateinit var starsCountTextView: TextView
     lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,6 +48,9 @@ class MainActivity : AppCompatActivity(){
         setContentView(R.layout.activity_main)
 
         supportActionBar?.hide()
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
+        val navController = navHostFragment.navController
 
 
         MobileAds.initialize(this){
@@ -71,12 +81,56 @@ class MainActivity : AppCompatActivity(){
 
         navView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.auto -> Toast.makeText(applicationContext, "Home", Toast.LENGTH_SHORT).show()
-                R.id.setting -> Toast.makeText(applicationContext, "setting", Toast.LENGTH_SHORT).show()
-                R.id.profile -> Toast.makeText(applicationContext, "profile", Toast.LENGTH_SHORT).show()
-                R.id.logOut -> Toast.makeText(applicationContext, "logOut", Toast.LENGTH_SHORT).show()
-                R.id.help -> Toast.makeText(applicationContext, "help", Toast.LENGTH_SHORT).show()
-                R.id.rate -> Toast.makeText(applicationContext, "rate", Toast.LENGTH_SHORT).show()
+                R.id.auto -> {
+                    navController.navigate(R.id.bookLibrary)
+                    closeDrawer()
+                }
+                R.id.setting -> {
+                    navController.navigate(R.id.settingsProfile)
+                    closeDrawer()
+                }
+                R.id.profile -> {
+                    navController.navigate(R.id.profile)
+                    closeDrawer()
+                }
+                R.id.logOut -> {
+                    firebaseAuth = FirebaseAuth.getInstance()
+                    val dialog = MyDialogFragment()
+                    dialog.setButtons(
+                        "Выйти",
+                        "Отмена",
+                        "Подтверждение выхода",
+                        "Вы точно хотите выйти из аккаунта?",
+                        {
+                            firebaseAuth.signOut()
+                            Toast.makeText(this, "Вы вышли из аккаунта", Toast.LENGTH_SHORT)
+                                .show()
+                            val intent = Intent(this, MainLog::class.java)
+                            startActivity(intent)
+                            finish()
+                        }, { })
+
+                    dialog.show(supportFragmentManager, "MyDialogFragment")
+                    closeDrawer()
+                }
+                R.id.help -> {
+                    Toast.makeText(applicationContext, "help", Toast.LENGTH_SHORT).show()
+                }
+                R.id.rate -> {
+                    Toast.makeText(applicationContext, "rate", Toast.LENGTH_SHORT).show()
+                }
+                R.id.floofers -> {
+                    val dialog = MyDialogFragment()
+                    dialog.setButtons(
+                        "Реклама",
+                        "Отмена",
+                        "Получение цветочков",
+                        "По просмотру рекламы, вы получите 15 цветочков",
+                        {
+                            showAd()
+                        }, { })
+                    dialog.show(supportFragmentManager, "MyDialogFragment")
+                }
             }
             true
         }
@@ -92,13 +146,20 @@ class MainActivity : AppCompatActivity(){
             insets
         }
     }
+    fun openDrawer() {
+        val drawerLayout : DrawerLayout = findViewById(R.id.main)
+        drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    fun closeDrawer() {
+        val drawerLayout : DrawerLayout = findViewById(R.id.main)
+        drawerLayout.closeDrawer(findViewById(R.id.nav_main))
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         if (toggle.onOptionsItemSelected(item)){
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
 

@@ -3,6 +3,7 @@ package com.korobeynikova.libro
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -41,6 +42,19 @@ class BookLibrary : Fragment(), BookItemClickListener {
     private lateinit var bookKlass: String
     private var booksList = mutableListOf<Book>()
 
+    private var mainActivity: MainActivity? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            mainActivity = context
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mainActivity = null
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,21 +79,13 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
         text()
 
-        binding.floofers.setOnClickListener {
-            val dialog = MyDialogFragment()
-            dialog.setButtons(
-                "Реклама",
-                "Отмена",
-                "Получение цветочков",
-                "По просмотру рекламы, вы получите 15 цветочков",
-                {
-                    (activity as MainActivity?)?.showAd()
-                }, { })
-            dialog.show(childFragmentManager, "MyDialogFragment")
+        binding.menuBtn.setOnClickListener {
+            (activity as? MainActivity)?.openDrawer()
         }
     }
     private fun updateStarsCount(newStars: String) {
-        binding.starsCount.text = newStars
+        val starsCount = view?.findViewById<TextView>(R.id.starsCount)
+        starsCount?.text = newStars
     }
     private fun text(){
         val clickListener = View.OnClickListener { view ->
@@ -148,32 +154,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
             }
             dialog.show(childFragmentManager, "SearchBooksDialog")
         }
-
-
-        val scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.button_animation)
-
-        /*binding.helpBtn.setOnClickListener { binding.helpBtn.startAnimation(scaleAnimation) }
-        binding.setingsBtn.setOnClickListener {
-            binding.setingsBtn.startAnimation(scaleAnimation)
-            binding.setingsBtn.postDelayed({
-                container.navigate(R.id.settingsProfile)
-            }, 200)
-        }
-        binding.profileBtn.setOnClickListener {
-            binding.profileBtn.startAnimation(scaleAnimation)
-            binding.profileBtn.postDelayed({
-                container.navigate(R.id.profile)
-            }, 200)
-        }
-        binding.logUotBtn.setOnClickListener {
-            binding.logUotBtn.startAnimation(scaleAnimation)
-            binding.logUotBtn.postDelayed({
-                exitProfile()
-            }, 200)
-        }
-        binding.searchView.setOnClickListener {
-
-        }*/
     }
 
     private fun performSearch(title: String?, author: String?, classes: List<String>) {
