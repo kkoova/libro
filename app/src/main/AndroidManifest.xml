@@ -20,7 +20,6 @@
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,6 +27,10 @@
             android:name=".MainLog"
             android:screenOrientation="behind"
             tools:ignore="DiscouragedApi" />
+
+        <meta-data
+            android:name="com.google.android.gms.auth.api.signin.APP_ID"
+            android:value="@string/default_web_client_id" />
     </application>
 
 </manifest>

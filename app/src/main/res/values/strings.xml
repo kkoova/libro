@@ -6,4 +6,7 @@
     <string name="passwords_not_match">Пароли не совпадают</string>
     <string name="successful_registration">Вы успешно зарегистрировались</string>
     <string name="registration_failed">Ошибка при регистрации пользователя</string>
+    <string name="open">Открыть</string>
+    <string name="close">Закрыть</string>
+    <string name="default_web_client_id">228607944104-urj7ucv2nrmsc1q43chco5e8mv4nbjon.apps.googleusercontent.com</string>
 </resources>

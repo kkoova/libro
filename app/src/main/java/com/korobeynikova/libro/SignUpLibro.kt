@@ -1,5 +1,6 @@
 package com.korobeynikova.libro
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +11,13 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.korobeynikova.libro.databinding.FragmentSignUpLibroBinding
 
@@ -19,10 +26,11 @@ class SignUpLibro : Fragment() {
     private lateinit var binding: FragmentSignUpLibroBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ):View? {
+    ): View? {
         binding = FragmentSignUpLibroBinding.inflate(inflater, container, false)
         return binding.root
     }

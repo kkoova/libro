@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "228607944104",
+    "firebase_url": "https://libro-ce0de-default-rtdb.firebaseio.com",
     "project_id": "libro-ce0de",
     "storage_bucket": "libro-ce0de.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.korobeynikova.libro"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "228607944104-urj7ucv2nrmsc1q43chco5e8mv4nbjon.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.korobeynikova.libro",
+            "certificate_hash": "065b8afd08aa5e9265fdfab59f4e0a32502348c9"
+          }
+        },
+        {
+          "client_id": "228607944104-utr5h05h0044sgc7erqqbj5b16soks6q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyACAZBCKtpBZ0wjaPKc18rnEaVC6kb7qBE"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228607944104-utr5h05h0044sgc7erqqbj5b16soks6q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -64,12 +64,23 @@
         style="@style/blackBtn"
         android:layout_width="260dp"
         android:layout_height="75dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/custom_null_btn"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="Регистрация"
         android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/googleSignInButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/googleSignInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:background="@drawable/custom_edit_text"
+        android:src="@drawable/googleg_standard_color_18"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

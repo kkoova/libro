@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/auto"
+        android:icon="@drawable/auto_stories"
+        android:title="Библиотека"/>
+
+    <item
+        android:title="Настройки"
+        android:id="@+id/setting"
+        android:icon="@drawable/settings"/>
+
+    <item android:title="Профиль">
+
+        <menu>
+            <item
+                android:id="@+id/profile"
+                android:icon="@drawable/person"
+                android:title="Профиль"/>
+
+            <item
+                android:title="Выйти из аккаунта"
+                android:id="@+id/logOut"
+                android:icon="@drawable/logout"/>
+        </menu>
+
+    </item>
+
+    <item android:title="Связь">
+
+        <menu>
+            <item
+                android:title="Помощь"
+                android:id="@+id/help"
+                android:icon="@drawable/help"/>
+            <item
+                android:title="Оцените нас!"
+                android:id="@+id/rate"
+                android:icon="@drawable/rate_review"/>
+
+        </menu>
+
+    </item>
+
+</menu>

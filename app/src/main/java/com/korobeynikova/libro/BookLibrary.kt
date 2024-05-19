@@ -47,7 +47,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
     ): View? {
         bookKlass = "nine"
         binding = FragmentBookLibraryBinding.inflate(inflater, container, false)
-        hideBottomMenu()
         return binding.root
     }
 
@@ -118,58 +117,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
         binding.fiveKl.setOnClickListener(clickListener)
 
     }
-    private fun showBottomMenu() {
-        val initialMargin = binding.buttonToShowMenu.marginBottom
-        val targetMargin = dpToPx(-16)
-
-        val marginAnimator = ValueAnimator.ofInt(initialMargin, targetMargin)
-        marginAnimator.addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            val params = binding.buttonToShowMenu.layoutParams as ConstraintLayout.LayoutParams
-            params.bottomMargin = value
-            binding.buttonToShowMenu.layoutParams = params
-        }
-
-        val height = binding.bottomMenu.height.toFloat()
-        binding.bottomMenu.animate()
-            .translationY(0f)
-            .alpha(1f)
-            .setDuration(300)
-            .start()
-
-        marginAnimator.duration = 300
-        marginAnimator.start()
-        binding.buttonToShowMenu.visibility = View.INVISIBLE
-    }
-    private fun hideBottomMenu() {
-        val initialMargin = binding.buttonToShowMenu.marginBottom
-        val targetMargin = dpToPx(-70)
-
-        val marginAnimator = ValueAnimator.ofInt(initialMargin, targetMargin)
-        marginAnimator.addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            val params = binding.buttonToShowMenu.layoutParams as ConstraintLayout.LayoutParams
-            params.bottomMargin = value
-            binding.buttonToShowMenu.layoutParams = params
-        }
-
-        val height = binding.bottomMenu.height.toFloat()
-        binding.bottomMenu.animate()
-            .translationY(height)
-            .alpha(0f)
-            .setDuration(300)
-            .start()
-
-        marginAnimator.duration = 300
-        marginAnimator.start()
-        binding.buttonToShowMenu.postDelayed({
-            binding.buttonToShowMenu.visibility = View.VISIBLE
-        }, 300)
-    }
-    private fun dpToPx(dp: Int): Int {
-        val density = resources.displayMetrics.density
-        return (dp * density).toInt()
-    }
 
     private fun buttonClick(){
         val container = findNavController()
@@ -202,16 +149,10 @@ class BookLibrary : Fragment(), BookItemClickListener {
             dialog.show(childFragmentManager, "SearchBooksDialog")
         }
 
-        binding.buttonToShowMenu.setOnClickListener {
-            showBottomMenu()
-        }
-
-        val color = ContextCompat.getColor(requireContext(), R.color.white)
-        binding.bookBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
         val scaleAnimation = AnimationUtils.loadAnimation(context, R.anim.button_animation)
 
-        binding.helpBtn.setOnClickListener { binding.helpBtn.startAnimation(scaleAnimation) }
+        /*binding.helpBtn.setOnClickListener { binding.helpBtn.startAnimation(scaleAnimation) }
         binding.setingsBtn.setOnClickListener {
             binding.setingsBtn.startAnimation(scaleAnimation)
             binding.setingsBtn.postDelayed({
@@ -230,9 +171,9 @@ class BookLibrary : Fragment(), BookItemClickListener {
                 exitProfile()
             }, 200)
         }
-        binding.searchBtn.setOnClickListener {
+        binding.searchView.setOnClickListener {
 
-        }
+        }*/
     }
 
     private fun performSearch(title: String?, author: String?, classes: List<String>) {
@@ -325,15 +266,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        recyclerViewBooks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && binding.bottomMenu.visibility == View.VISIBLE) {
-                    hideBottomMenu()
-                }
             }
         })
     }

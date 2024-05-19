@@ -90,7 +90,7 @@
             android:id="@+id/textPassGo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="80dp"
             android:fontFamily="@font/reseva"
             android:text="Забыли пароль?"
             android:textColor="@color/black"

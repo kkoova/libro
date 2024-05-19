@@ -29,7 +29,6 @@ class SearchBooksDialog(private val onSearch: (String?, String?, List<String>) -
     private val titlesList = mutableListOf<String>()
     private val authorsList = mutableListOf<String>()
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

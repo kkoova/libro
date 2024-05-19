@@ -40,6 +40,8 @@ android {
 }
 
 dependencies {
+    implementation (libs.firebase.bom)
+    implementation (libs.play.services.auth)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

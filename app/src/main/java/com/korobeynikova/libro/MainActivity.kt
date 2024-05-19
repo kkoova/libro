@@ -2,13 +2,18 @@ package com.korobeynikova.libro
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.yandex.mobile.ads.common.AdError
@@ -22,13 +27,12 @@ import com.yandex.mobile.ads.rewarded.RewardedAdEventListener
 import com.yandex.mobile.ads.rewarded.RewardedAdLoadListener
 import com.yandex.mobile.ads.rewarded.RewardedAdLoader
 
-
-@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(){
 
     private var rewardedAd: RewardedAd? = null
     private var rewardedAdLoader: RewardedAdLoader? = null
     private lateinit var starsCountTextView: TextView
+    lateinit var toggle: ActionBarDrawerToggle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,6 +60,27 @@ class MainActivity : AppCompatActivity(){
             loadRewAd()
         }
 
+        val drawerLayout : DrawerLayout = findViewById(R.id.main)
+        val navView : NavigationView = findViewById(R.id.nav_main)
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        supportActionBar?.setDisplayUseLogoEnabled(true)
+
+        navView.setNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.auto -> Toast.makeText(applicationContext, "Home", Toast.LENGTH_SHORT).show()
+                R.id.setting -> Toast.makeText(applicationContext, "setting", Toast.LENGTH_SHORT).show()
+                R.id.profile -> Toast.makeText(applicationContext, "profile", Toast.LENGTH_SHORT).show()
+                R.id.logOut -> Toast.makeText(applicationContext, "logOut", Toast.LENGTH_SHORT).show()
+                R.id.help -> Toast.makeText(applicationContext, "help", Toast.LENGTH_SHORT).show()
+                R.id.rate -> Toast.makeText(applicationContext, "rate", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, 0, systemBars.right, 0)
@@ -64,9 +89,17 @@ class MainActivity : AppCompatActivity(){
                 this.isAppearanceLightStatusBars = true
                 isAppearanceLightNavigationBars = true
             }
-
             insets
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (toggle.onOptionsItemSelected(item)){
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun replaceFragment(fragment: Fragment) {
