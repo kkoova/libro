@@ -48,35 +48,14 @@ class SettingsProfile : Fragment() {
             dialog.setButtons(
                 "Сохранить",
                 "Отмена",
-                { pass: String, login: String ->
-                    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+                { login: String ->
                     val database: DatabaseReference = FirebaseDatabase.getInstance().reference
 
                     val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
-                    if (pass.isNotEmpty() || login.isNotEmpty()){
-                        if (pass.isNotEmpty()) {
-                            val user = firebaseAuth.currentUser
-                            user?.updatePassword(pass)
-                                ?.addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Toast.makeText(requireContext(), "Пароль успешно изменен", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(requireContext(), "${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                                    dialog.dismiss()
-                                }
-
-                            database.child("users").child(uid).child("password").setValue(pass)
-
-                            Toast.makeText(requireContext(), "Данные успешно сохранены", Toast.LENGTH_SHORT).show()
-
-                        }
-
-                        if (login.isNotEmpty()) {
-                            database.child("users").child(uid).child("username").setValue(login)
-                            Toast.makeText(requireContext(), "Данные логина успешно сохранены", Toast.LENGTH_SHORT).show()
-                        }
+                    if (login.isNotEmpty()) {
+                        database.child("users").child(uid).child("username").setValue(login)
+                        Toast.makeText(requireContext(), "Данные логина успешно сохранены", Toast.LENGTH_SHORT).show()
                     } else { Toast.makeText(requireContext(), "Поля пустые", Toast.LENGTH_SHORT).show() }
                 },
                 { }

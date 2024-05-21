@@ -65,6 +65,7 @@ class StartLiginOrSign : Fragment() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -109,8 +110,7 @@ class StartLiginOrSign : Fragment() {
                                         MainLog().finish()
                                     }
                                     .addOnFailureListener { e ->
-                                        Log.e("FirebaseDebug", "Ошибка при записи данных в базу данных: ${e.localizedMessage ?: "Unknown error"}")
-                                        Toast.makeText(requireContext(), e.localizedMessage ?: getString(R.string.registration_failed), Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(requireContext(), "Ошибка при записи данных в базу данных: ${e.localizedMessage ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
                                     }
                             } else {
                                 Log.d("FirebaseDebug", "Пользователь уже существует в базе данных")

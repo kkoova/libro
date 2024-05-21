@@ -14,13 +14,13 @@ import androidx.fragment.app.DialogFragment
 class MyDialogEdit : DialogFragment() {
     private var positiveText: String? = null
     private var negativeText: String? = null
-    private var positiveAction: ((String, String) -> Unit)? = null
+    private var positiveAction: ((String) -> Unit)? = null
     private var negativeAction: (() -> Unit)? = null
 
     fun setButtons(
         positiveText: String,
         negativeText: String,
-        positiveAction: (String, String) -> Unit,
+        positiveAction: (String) -> Unit,
         negativeAction: () -> Unit
     ) {
         this.positiveText = positiveText
@@ -47,10 +47,9 @@ class MyDialogEdit : DialogFragment() {
         noButton.text = negativeText
 
         yesButton.setOnClickListener {
-            val emailEditText = view.findViewById<EditText>(R.id.emalTextText)
             val loginEditText = view.findViewById<EditText>(R.id.loginTextText)
 
-            positiveAction?.invoke(emailEditText.text.toString(), loginEditText.text.toString())
+            positiveAction?.invoke(loginEditText.text.toString())
         }
 
         noButton.setOnClickListener {

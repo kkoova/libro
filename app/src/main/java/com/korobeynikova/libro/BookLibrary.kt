@@ -84,8 +84,8 @@ class BookLibrary : Fragment(), BookItemClickListener {
         }
     }
     private fun updateStarsCount(newStars: String) {
-        val starsCount = view?.findViewById<TextView>(R.id.starsCount)
-        starsCount?.text = newStars
+        //val starsCount = view?.findViewById<TextView>(R.id.starsCount)
+        //starsCount?.text = newStars
     }
     private fun text(){
         val clickListener = View.OnClickListener { view ->

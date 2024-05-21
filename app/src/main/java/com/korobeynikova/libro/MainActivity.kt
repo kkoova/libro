@@ -1,10 +1,13 @@
 package com.korobeynikova.libro
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,14 +17,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.korobeynikova.libro.databinding.FragmentLibroStartOneBinding
 import com.korobeynikova.libro.databinding.FragmentProfileBinding
 import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
+import com.korobeynikova.libro.databinding.HederMenuBinding
 import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequestConfiguration
 import com.yandex.mobile.ads.common.AdRequestError
@@ -42,7 +48,8 @@ class MainActivity : AppCompatActivity(){
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        var binding = HederMenuBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         enableEdgeToEdge()
 
         setContentView(R.layout.activity_main)
@@ -52,6 +59,7 @@ class MainActivity : AppCompatActivity(){
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
         val navController = navHostFragment.navController
 
+        starsCountTextView = binding.starsCountTextView
 
         MobileAds.initialize(this){
             rewardedAdLoader = RewardedAdLoader(this).apply {
@@ -66,7 +74,6 @@ class MainActivity : AppCompatActivity(){
                     }
                 })
             }
-            starsCountTextView = findViewById(R.id.starsCount)
             loadRewAd()
         }
 
@@ -119,7 +126,7 @@ class MainActivity : AppCompatActivity(){
                 R.id.rate -> {
                     Toast.makeText(applicationContext, "rate", Toast.LENGTH_SHORT).show()
                 }
-                R.id.floofers -> {
+                R.id.fof -> {
                     val dialog = MyDialogFragment()
                     dialog.setButtons(
                         "Реклама",

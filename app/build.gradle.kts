@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.mobileads)
+    implementation(libs.androidx.databinding.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

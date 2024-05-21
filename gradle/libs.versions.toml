@@ -22,6 +22,7 @@ firebaseDatabase = "20.3.1"
 firebaseFirestoreKtx = "24.11.1"
 playServicesAds = "23.0.0"
 playServicesAuth = "21.1.1"
+databindingRuntime = "8.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ material-v190 = { module = "com.google.android.material:material", version.ref =
 mobileads = { module = "com.yandex.android:mobileads", version.ref = "mobileads" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+androidx-databinding-runtime = { group = "androidx.databinding", name = "databinding-runtime", version.ref = "databindingRuntime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
