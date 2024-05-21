@@ -83,10 +83,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
             (activity as? MainActivity)?.openDrawer()
         }
     }
-    private fun updateStarsCount(newStars: String) {
-        //val starsCount = view?.findViewById<TextView>(R.id.starsCount)
-        //starsCount?.text = newStars
-    }
     private fun text(){
         val clickListener = View.OnClickListener { view ->
 
@@ -136,8 +132,6 @@ class BookLibrary : Fragment(), BookItemClickListener {
             database.child("users").child(uid).get()
                 .addOnSuccessListener {
                     val login = it.child("username").value.toString()
-                    val stars = it.child("stars").value.toString()
-                    updateStarsCount(stars)
                     binding.helloTextLibr.text = "Привет, $login!"
                 }.addOnFailureListener {
 
@@ -157,45 +151,22 @@ class BookLibrary : Fragment(), BookItemClickListener {
     }
 
     private fun performSearch(title: String?, author: String?, classes: List<String>) {
-        Log.d("help", "${title} ${author} ${classes}")
+        val allClasses = listOf("five", "six", "seven", "eight", "nine", "ten", "eleven")
+        val searchClasses = if (classes.isEmpty()) allClasses else classes
+
         val query = FirebaseDatabase.getInstance().reference.child("books")
         val bookList = mutableListOf<Book>()
 
         // Поиск по названию
         if (!title.isNullOrEmpty()) {
-            for (className in classes) {
+            for (className in searchClasses) {
                 query.child(className).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         for (snapshot in dataSnapshot.children) {
                             val bookTitle = snapshot.child("title").getValue(String::class.java)
-                            Log.d("help", "${title} ${bookTitle}")
-                            if (bookTitle == title){
+                            if (bookTitle == title) {
                                 val path = "books/$className/${snapshot.key}"
-                                Log.d("help", "${path}")
                                 val book = Book(bookTitle, path)
-                                bookList.add(book)
-                            }
-                        }
-                        updateRecyclerView(bookList)
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
-                        updateRecyclerView(bookList)
-                    }
-                })
-            }
-        }
-        // Поиск по автору
-        if (!author.isNullOrEmpty()) {
-            for (className in classes) {
-                query.child(className).orderByChild("author").equalTo(author).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (snapshot in dataSnapshot.children) {
-                            val bookTitle = snapshot.child("author").getValue(String::class.java)
-                            bookTitle?.let {
-                                val path = "books/$className/${snapshot.key}"
-                                val book = Book(it, path)
                                 if (!bookList.contains(book)) {
                                     bookList.add(book)
                                 }
@@ -206,16 +177,61 @@ class BookLibrary : Fragment(), BookItemClickListener {
 
                     override fun onCancelled(databaseError: DatabaseError) {
                         Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        }
+
+        // Поиск по автору
+        if (!author.isNullOrEmpty()) {
+            for (className in searchClasses) {
+                query.child(className).orderByChild("author").equalTo(author).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (snapshot in dataSnapshot.children) {
+                            val bookAuthor = snapshot.child("author").getValue(String::class.java)
+                            if (bookAuthor == author) {
+                                val bookTitle = snapshot.child("title").getValue(String::class.java)
+                                val path = "books/$className/${snapshot.key}"
+                                val book = Book(bookTitle ?: "Unknown", path)
+                                if (!bookList.contains(book)) {
+                                    bookList.add(book)
+                                }
+                            }
+                        }
                         updateRecyclerView(bookList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        }
+
+        // Поиск по выбранным классам, если нет ни названия, ни автора
+        if (title.isNullOrEmpty() && author.isNullOrEmpty() && classes.isNotEmpty()) {
+            for (className in searchClasses) {
+                query.child(className).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (snapshot in dataSnapshot.children) {
+                            val bookTitle = snapshot.child("title").getValue(String::class.java)
+                            val path = "books/$className/${snapshot.key}"
+                            val book = Book(bookTitle ?: "Unknown", path)
+                            if (!bookList.contains(book)) {
+                                bookList.add(book)
+                            }
+                        }
+                        updateRecyclerView(bookList)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Toast.makeText(requireContext(), "Ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
                     }
                 })
             }
         }
     }
-
     private fun updateRecyclerView(bookList: List<Book>) {
-        Log.d("SearchBooksDialog", "Updating RecyclerView with ${bookList.size} books")
-
         val backgroundImagesArray = getBackgroundImagesArray()
         val bookAdapter = BookAdapter(bookList, backgroundImagesArray, this@BookLibrary)
         binding.recyclerViewBooks.adapter = bookAdapter

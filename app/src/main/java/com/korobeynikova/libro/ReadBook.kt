@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -78,9 +79,11 @@ class ReadBook : Fragment() {
         binding.decreaseTextButton.setOnClickListener {
             decreaseTextSize()
         }
-
         nextChapterButton.setOnClickListener {
-
+            bookPath?.let {
+                addBookToReadBooks(it)
+            }
+            controller.navigate(R.id.bookLibrary)
         }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -97,9 +100,7 @@ class ReadBook : Fragment() {
                 }
             }
         })
-
     }
-
     private fun increaseTextSize() {
         val newTextSize = chapterAdapter.getTextSize() + 2
         chapterAdapter.setTextSize(newTextSize)
@@ -135,7 +136,6 @@ class ReadBook : Fragment() {
             }
         })
     }
-
     private fun toggleMenu() {
         val newWidth: Int
         val menuLayoutParams = scrollView.layoutParams
@@ -186,7 +186,6 @@ class ReadBook : Fragment() {
             }
         })
     }
-
     private fun createChapterMenu() {
         val chapterMenu = binding.chapterMenu
         chapterMenu.removeAllViews()
@@ -202,9 +201,6 @@ class ReadBook : Fragment() {
             chapterMenu.addView(chapterView)
         }
     }
-
-
-
     private fun setChapterMenuListeners() {
         val chapters = chapterAdapter.getData()
 
@@ -250,4 +246,23 @@ class ReadBook : Fragment() {
     private fun updateRecyclerView(chapters: List<String>) {
         chapterAdapter.setData(chapters)
     }
+    private fun addBookToReadBooks(bookPath: String) {
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        val userBooksRef = databaseReference.child("users").child(uid).child("readBooks")
+
+        userBooksRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val readBooks = dataSnapshot.children.map { it.value.toString() }
+                if (!readBooks.contains(bookPath)) {
+                    userBooksRef.push().setValue(bookPath)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(requireContext(), "Ошибка при выполнении запроса", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 }

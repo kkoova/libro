@@ -73,8 +73,7 @@ class SignUpLibro : Fragment() {
                     val userData = hashMapOf(
                         "username" to login,
                         "email" to singUserEmail,
-                        "stars" to 100,
-                        "all" to 0
+                        "stars" to 100
                     )
 
                     userReference.setValue(userData)

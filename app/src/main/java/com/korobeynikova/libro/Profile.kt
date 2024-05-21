@@ -63,14 +63,26 @@ class Profile : Fragment(), BookItemLikeClick  {
         database.child("users").child(uid).get()
             .addOnSuccessListener {
                 val login = it.child("username").value.toString()
-                val all = it.child("all").value.toString()
                 binding.textProfName.text = login
-                binding.textBook.text = all
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Данные не были загруженны", Toast.LENGTH_SHORT).show()
             }
 
         loadFavoriteBooks()
+        loadReadBooksCount()
+    }
+    private fun loadReadBooksCount() {
+        val readBooksRef = database.child("users").child(uid).child("readBooks")
+        readBooksRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val readBooksCount = snapshot.childrenCount
+                binding.textBook.text = readBooksCount.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Ошибка при загрузке количества прочитанных книг", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun loadFavoriteBooks() {
@@ -102,7 +114,6 @@ class Profile : Fragment(), BookItemLikeClick  {
                     }
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(requireContext(), "Ошибка при загрузке избранных книг", Toast.LENGTH_SHORT).show()
             }

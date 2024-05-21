@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -43,13 +42,15 @@ class MainActivity : AppCompatActivity(){
 
     private var rewardedAd: RewardedAd? = null
     private var rewardedAdLoader: RewardedAdLoader? = null
-    private lateinit var starsCountTextView: TextView
-    lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var binding: HederMenuBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var binding = HederMenuBinding.inflate(layoutInflater)
+
+        binding = HederMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         enableEdgeToEdge()
 
         setContentView(R.layout.activity_main)
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity(){
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
         val navController = navHostFragment.navController
 
-        starsCountTextView = binding.starsCountTextView
+        //updateStarsCount()
 
         MobileAds.initialize(this){
             rewardedAdLoader = RewardedAdLoader(this).apply {
@@ -218,7 +219,7 @@ class MainActivity : AppCompatActivity(){
                             val stars = starsValue.toString().toInt()
                             val newStars = (stars + 15).toString()
                             database.child("users").child(uid).child("stars").setValue(newStars)
-                            updateStarsCount(newStars.toInt())
+                            binding.starsCountTextView.text = "$stars"
                         }
                         .addOnCanceledListener {}
                 }
@@ -240,9 +241,14 @@ class MainActivity : AppCompatActivity(){
         rewardedAd = null
     }
 
-    fun updateStarsCount(stars: Int) {
-        runOnUiThread {
-            starsCountTextView.text = "$stars"
-        }
+    private fun updateStarsCount() {
+        val database = FirebaseDatabase.getInstance().reference
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+        database.child("users").child(uid).get()
+            .addOnSuccessListener { dataSnapshot ->
+                val starsValue = dataSnapshot.child("stars").value
+                binding.starsCountTextView.text = "$starsValue"
+            }
     }
 }

@@ -98,8 +98,7 @@ class StartLiginOrSign : Fragment() {
                                 val userData = hashMapOf(
                                     "username" to user.displayName,
                                     "email" to user.email,
-                                    "stars" to 100,
-                                    "all" to 0
+                                    "stars" to 100
                                 )
                                 userReference.setValue(userData)
                                     .addOnSuccessListener {
