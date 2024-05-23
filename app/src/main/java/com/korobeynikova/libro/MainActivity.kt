@@ -1,19 +1,15 @@
 package com.korobeynikova.libro
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,11 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.korobeynikova.libro.databinding.FragmentLibroStartOneBinding
-import com.korobeynikova.libro.databinding.FragmentProfileBinding
-import com.korobeynikova.libro.databinding.FragmentSettingsProfileBinding
-import com.korobeynikova.libro.databinding.HederMenuBinding
+import com.korobeynikova.libro.databinding.ActivityMainBinding
 import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequestConfiguration
 import com.yandex.mobile.ads.common.AdRequestError
@@ -37,6 +31,7 @@ import com.yandex.mobile.ads.rewarded.RewardedAd
 import com.yandex.mobile.ads.rewarded.RewardedAdEventListener
 import com.yandex.mobile.ads.rewarded.RewardedAdLoadListener
 import com.yandex.mobile.ads.rewarded.RewardedAdLoader
+import com.google.firebase.database.*
 
 class MainActivity : AppCompatActivity(){
 
@@ -44,23 +39,28 @@ class MainActivity : AppCompatActivity(){
     private var rewardedAdLoader: RewardedAdLoader? = null
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var binding: HederMenuBinding
+    private lateinit var database: DatabaseReference
+    private lateinit var starsCountTextView: TextView
+    private lateinit var fof: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = HederMenuBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // Получаем ссылку на NavigationView и заголовок
+        val navigationView: NavigationView = findViewById(R.id.nav_main)
+        val headerView = navigationView.getHeaderView(0)
+        starsCountTextView = headerView.findViewById(R.id.starsCountTextView)
+        fof = headerView.findViewById(R.id.fof)
+        updateStarsCount()
 
         enableEdgeToEdge()
-
-        setContentView(R.layout.activity_main)
 
         supportActionBar?.hide()
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
         val navController = navHostFragment.navController
 
-        //updateStarsCount()
 
         MobileAds.initialize(this){
             rewardedAdLoader = RewardedAdLoader(this).apply {
@@ -127,22 +127,22 @@ class MainActivity : AppCompatActivity(){
                 R.id.rate -> {
                     Toast.makeText(applicationContext, "rate", Toast.LENGTH_SHORT).show()
                 }
-                R.id.fof -> {
-                    val dialog = MyDialogFragment()
-                    dialog.setButtons(
-                        "Реклама",
-                        "Отмена",
-                        "Получение цветочков",
-                        "По просмотру рекламы, вы получите 15 цветочков",
-                        {
-                            showAd()
-                        }, { })
-                    dialog.show(supportFragmentManager, "MyDialogFragment")
-                }
             }
             true
         }
 
+        fof.setOnClickListener {
+            val dialog = MyDialogFragment()
+            dialog.setButtons(
+                "Реклама",
+                "Отмена",
+                "Получение цветочков",
+                "По просмотру рекламы, вы получите 15 цветочков",
+                {
+                    showAd()
+                }, { })
+            dialog.show(supportFragmentManager, "MyDialogFragment")
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, 0, systemBars.right, 0)
@@ -158,27 +158,22 @@ class MainActivity : AppCompatActivity(){
         val drawerLayout : DrawerLayout = findViewById(R.id.main)
         drawerLayout.openDrawer(GravityCompat.START)
     }
-
     fun closeDrawer() {
         val drawerLayout : DrawerLayout = findViewById(R.id.main)
         drawerLayout.closeDrawer(findViewById(R.id.nav_main))
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){
             return true
         }
         return super.onOptionsItemSelected(item)
     }
-
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainerView2,fragment)
             .commit()
     }
-
-
     private fun loadRewAd(){
         val adRewardConfiguration = AdRequestConfiguration.Builder("R-M-8167134-2").build()
         rewardedAdLoader?.loadAd(adRewardConfiguration)
@@ -190,25 +185,20 @@ class MainActivity : AppCompatActivity(){
                 override fun onAdClicked() {
 
                 }
-
                 override fun onAdDismissed() {
                     destroyRewAd()
                     loadRewAd()
                 }
-
                 override fun onAdFailedToShow(adError: AdError) {
                     destroyRewAd()
                     loadRewAd()
                 }
-
                 override fun onAdImpression(impressionData: ImpressionData?) {
 
                 }
-
                 override fun onAdShown() {
 
                 }
-
                 override fun onRewarded(reward: Reward) {
                     val database = FirebaseDatabase.getInstance().reference
                     val uid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -219,7 +209,7 @@ class MainActivity : AppCompatActivity(){
                             val stars = starsValue.toString().toInt()
                             val newStars = (stars + 15).toString()
                             database.child("users").child(uid).child("stars").setValue(newStars)
-                            binding.starsCountTextView.text = "$stars"
+                            updateStarsCount()
                         }
                         .addOnCanceledListener {}
                 }
@@ -228,27 +218,32 @@ class MainActivity : AppCompatActivity(){
             show(this@MainActivity)
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         rewardedAd?.setAdEventListener(null)
         rewardedAd = null
         destroyRewAd()
     }
-
     private fun destroyRewAd(){
         rewardedAd?.setAdEventListener(null)
         rewardedAd = null
     }
-
     private fun updateStarsCount() {
-        val database = FirebaseDatabase.getInstance().reference
-        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val user = FirebaseAuth.getInstance().currentUser
+        val uid = user?.uid
 
-        database.child("users").child(uid).get()
-            .addOnSuccessListener { dataSnapshot ->
-                val starsValue = dataSnapshot.child("stars").value
-                binding.starsCountTextView.text = "$starsValue"
-            }
+        if (uid != null) {
+            database = FirebaseDatabase.getInstance().reference
+
+            database.child("users").child(uid).get()
+                .addOnSuccessListener { dataSnapshot ->
+                    val starsValue = dataSnapshot.child("stars").value
+
+                    runOnUiThread {
+                        starsCountTextView.text = starsValue.toString()
+                    }
+                }
+        }
+
     }
 }
